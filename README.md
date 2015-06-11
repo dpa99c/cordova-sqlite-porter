@@ -48,11 +48,11 @@ or from [npmjs.com](https://npmjs.com/):
 
 The plugin is exposed via the `cordova.plugins.sqlitePorter` object and provides the following functions:
 
-- [importSqlToDb()](#importSqlToDb)
-- [exportDbToSql()](#exportDbToSql)
-- [importJsonToDb()](#importJsonToDb)
-- [exportDbToJson()](#exportDbToJson)
-- [wipeDb()](#wipeDb)
+- [importSqlToDb()](#importsqltodb)
+- [exportDbToSql()](#exportdbtosql)
+- [importJsonToDb()](#importjsontodb)
+- [exportDbToJson()](#exportdbtojson)
+- [wipeDb()](#wipedb)
 
 ## importSqlToDb()
 
@@ -255,8 +255,17 @@ Wipes all data from a database by dropping all existing tables.
 
 ## Example projects
 
-https://github.com/dpa99c/phonegap-launch-navigator-example
+### HTML5 WebSQL
 
+[https://github.com/dpa99c/cordova-sqlite-porter-example](https://github.com/dpa99c/cordova-sqlite-porter-example)
+
+This example project illustrates how the plugin can be used to import/export data from a WebSQL database in the WebView.
+
+### Native SQLite
+
+[https://github.com/dpa99c/cordova-sqlite-porter-example-native-plugin](https://github.com/dpa99c/cordova-sqlite-porter-example-native-plugin)
+
+This example project illustrates how the plugin can be used to import/export data from a native SQLite database using a [native SQLite plugin](https://github.com/litehelpers/Cordova-sqlite-storage)
 
 License
 ================
