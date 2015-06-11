@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin
+        xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-sqlite-porter" 
+        version="0.0.1">
+    <name>sqlite porter</name>
+    <description>Enables importing/exporting of SQLite databases to/from JSON/SQL.</description>
+    <author>Dave Alden</author>
+
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+
+    </engines>
+    <repo>https://github.com/dpa99c/cordova-sqlite-porter.git</repo>
+    <issue>https://github.com/dpa99c/cordova-sqlite-porter/issues</issue>
+
+    <license>MIT</license>
+    <keywords>cordova,phonegap,database,sqlite,websql,import,export</keywords>
+
+    <js-module name="sqlitePorter" src="www/sqlitePorter.js">
+        <clobbers target="cordova.plugins.sqlitePorter" />
+    </js-module>
+</plugin>
