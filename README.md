@@ -24,25 +24,25 @@ Usage scenarios
 
 ## Using the Cordova/Phonegap [CLI](http://docs.phonegap.com/en/edge/guide_cli_index.md.html)
 
-    $ cordova plugin add cordova-sqlite-porter
-    $ phonegap plugin add cordova-sqlite-porter
+    $ cordova plugin add uk.co.workingedge.cordova.plugin.sqliteporter
+    $ phonegap plugin add uk.co.workingedge.cordova.plugin.sqliteporter
 
 ## Using [Cordova Plugman](https://github.com/apache/cordova-plugman)
 
-    $ plugman install --plugin=cordova-sqlite-porter --platform=<platform> --project=<project_path> --plugins_dir=plugins
+    $ plugman install --plugin=uk.co.workingedge.cordova.plugin.sqliteporter --platform=<platform> --project=<project_path> --plugins_dir=plugins
 
 For example, to install for the Android platform
 
-    $ plugman install --plugin=cordova-sqlite-porter --platform=android --project=platforms/android --plugins_dir=plugins
+    $ plugman install --plugin=uk.co.workingedge.cordova.plugin.sqliteporter --platform=android --project=platforms/android --plugins_dir=plugins
 
 ## PhoneGap Build
 Add the following xml to your config.xml to use the latest version of this plugin from [plugins.cordova.io](http://plugins.cordova.io):
 
-    <gap:plugin name="cordova-sqlite-porter" source="plugins.cordova.io" />
+    <gap:plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" source="plugins.cordova.io" />
 
 or from [npmjs.com](https://npmjs.com/):
 
-    <gap:plugin name="cordova-sqlite-porter" source="npm" />
+    <gap:plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" source="npm" />
 
 # Usage
 

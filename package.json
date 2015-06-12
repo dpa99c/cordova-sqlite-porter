@@ -1,6 +1,6 @@
 {
     "version": "0.0.1",
-    "name": "cordova-sqlite-porter",
+    "name": "uk.co.workingedge.cordova.plugin.sqliteporter",
     "cordova_name": "sqlite porter",
     "description": "Enables importing/exporting of SQLite databases to/from JSON/SQL.",
     "author": "Dave Alden",
@@ -10,7 +10,7 @@
         "url": "https://github.com/dpa99c/cordova-sqlite-porter.git"
     },
     "cordova": {
-        "id": "cordova-sqlite-porter"
+        "id": "uk.co.workingedge.cordova.plugin.sqliteporter"
     },
     "issue": "https://github.com/dpa99c/cordova-sqlite-porter/issues",
     "keywords": [
