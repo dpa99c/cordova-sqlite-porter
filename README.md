@@ -3,8 +3,19 @@ SQLite Porter Cordova/Phonegap Plugin
 
 This Cordova/Phonegap plugin can be used to import/export to/from a SQLite database using either SQL or JSON.
 
-- Works on all Cordova platforms that support HTML5 WebSQL DB in the WebView
-- Works for native SQLite DB via a [plugin](https://github.com/litehelpers/Cordova-sqlite-storage). This can be used for platforms that don't have WebSQL in WebView (e.g. Windows) or for unlimited storage on platforms that do.
+- Works on all Cordova platforms that [support HTML5 WebSQL DB in the WebView](http://docs.phonegap.com/en/4.0.0/cordova_storage_storage.md.html):
+    - Android
+    - iOS
+    - Tizen
+    - Blackberry 10
+- Works for native SQLite DB via a [plugin](https://github.com/litehelpers/Cordova-sqlite-storage).
+This can be used for platforms that don't have WebSQL in WebView (e.g. Windows) or for unlimited storage on platforms that do:
+    - Android
+    - iOS
+    - Amazon Fire-OS
+    - Windows Universal (8.1)
+    - Windows Phone 7
+    - Windows Phone 8
 - Import/export either just the table data or the entire table structure as well.
 
 Usage scenarios
