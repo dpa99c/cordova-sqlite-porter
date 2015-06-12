@@ -214,7 +214,7 @@
      *  <li>{function} successFn - callback function to execute after export is complete, with arguments:
      *      <ul>
      *          <li>{object} json - exported JSON structure.</li>
-     *          <li>{integer} count - number of SQL statements that exported JSON structure corresponds to..</li>
+     *          <li>{integer} count - number of SQL statements that exported JSON structure corresponds to.</li>
      *      <ul>
      *  </li>
      *  <li>{boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.</li>

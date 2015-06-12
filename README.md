@@ -59,14 +59,20 @@ The plugin is exposed via the `cordova.plugins.sqlitePorter` object and provides
 Executes a set of SQL statements against the defined database.
 Can be used to import data defined in the SQL statements into the database, and may additionally include commands to create the table structure.
 
-    cordova.plugins.sqlitePorter.importSqlToDb(db, sql, successFn, errorFn);
+    cordova.plugins.sqlitePorter.importSqlToDb(db, sql, opts);
 
 ### Parameters
 
 - {Database} db - open SQLite database to import into
 - {string} sql - SQL statements to execute against database.
-- {function} successFn - callback function to execute once import is complete
-- {function} errorFn - callback function to execute on error during import
+- {object} opts - optional parameters:
+    - {function} successFn - callback function to execute once import is complete, called with arguments:
+        - {integer} count - total number of statements executed in the given SQL string.
+    - {function} errorFn - callback function to execute on error during import, called with arguments:
+        - {object} error - object representing the error.
+    - {function} progressFn - callback function to execute after each successful execution of SQL statement, called with arguments:
+        - {object} count - number of statements executed so far.
+        - {integer} totalCount - total number of statements in the given SQL string.
 
 ### Example usage
 
@@ -75,13 +81,20 @@ Create a database from a SQL dump
     var db = window.openDatabase("Test", "1.0", "TestDB", 1 * 1024);
     var sql = "CREATE TABLE Artist ([Id] PRIMARY KEY, [Title]);"+
         "INSERT INTO Artist(Id,Title) VALUES ('1','Fred');";
-    var successFn = function(){
-        alert("Successfully imported SQL to DB");
+    var successFn = function(count){
+        alert("Successfully imported "+count+" SQL statements to DB");
     };
     var errorFn = function(error){
         alert("The following error occurred: "+error.message);
     };
-    cordova.plugins.sqlitePorter.importSqlToDb(db, sql, successFn, errorFn);
+    var progressFn = function(current, total){
+        console.log("Imported "+current+"/"+total+" statements";
+    };
+    cordova.plugins.sqlitePorter.importSqlToDb(db, sql, {
+        successFn: successFn,
+        errorFn: errorFn,
+        progressFn: progressFn
+    });
 
 
 Update an existing database
@@ -90,47 +103,66 @@ Update an existing database
     var sql = "INSERT INTO Artist(Id,Title) VALUES ('6','Jane');"+
         "UPDATE Artist SET Title='Susan' WHERE Id='2';"+
         "DELETE FROM Artist WHERE Id='5';";
-    var successFn = function(){
-        alert("Successfully updated DB");
+    var successFn = function(count){
+        alert("Successfully imported "+count+" SQL statements to DB");
     };
     var errorFn = function(error){
         alert("The following error occurred: "+error.message);
     };
-    cordova.plugins.sqlitePorter.importSqlToDb(db, sql, successFn, errorFn);
+    var progressFn = function(current, total){
+        console.log("Imported "+current+"/"+total+" statements";
+    };
+    cordova.plugins.sqlitePorter.importSqlToDb(db, sql, {
+        successFn: successFn,
+        errorFn: errorFn,
+        progressFn: progressFn
+    });
 
 ## exportDbToSql()
 
 Exports a SQLite DB as a set of SQL statements.
 
-    cordova.plugins.sqlitePorter.exportDbToSql(db, successFn, dataOnly);
+    cordova.plugins.sqlitePorter.exportDbToSql(db, opts);
 
 ### Parameters
 
 - {Database} db - open SQLite database to export
-- {function} successFn - callback function to pass SQL statements to (as first parameter).
-- {boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported.
+- {object} opts - optional parameters:
+    - {function} successFn - callback function to execute after export is complete, with arguments:
+        - {string} sql - exported SQL statements combined into a single string.
+        - {integer} count - number of SQL statements in exported string.
+    - {boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.
 
 ### Example usage
 
     var db = window.openDatabase("Test", "1.0", "TestDB", 1 * 1024);
-    var successFn = function(sql){
-        alert("Exported SQL: "+sql);
+    var successFn = function(sql, count){
+        console.log("Exported SQL: "+sql);
+        alert("Exported SQL contains "+count+" statements");
     };
-    cordova.plugins.sqlitePorter.exportDbToSql(db, successFn, false);
+    cordova.plugins.sqlitePorter.exportDbToSql(db, {
+        successFn: successFn
+    });
 
 ## importJsonToDb()
 
 Converts table structure and/or row data contained within a JSON structure into SQL statements that can be executed against a SQLite database.
 Can be used to import data into the database and/or create the table structure.
 
-    cordova.plugins.sqlitePorter.importJsonToDb(db, json, successFn, errorFn);
+    cordova.plugins.sqlitePorter.importJsonToDb(db, json, opts);
 
 ### Parameters
 
 - {Database} db - open SQLite database to import into
 - {string/object} json - JSON structure containing row data and/or table structure as either a JSON object or string
-- {function} successFn - callback function to execute once import is complete
-- {function} errorFn - callback function to execute on error during import
+- {object} opts - optional parameters:
+    - {function} successFn - callback function to execute once import is complete, called with arguments:
+        - {integer} count - total number of statements executed in the given SQL string.
+    - {function} errorFn - callback function to execute on error during import, called with arguments:
+        - {object} error - object representing the error.
+    - {function} progressFn - callback function to execute after each successful execution of SQL statement, called with arguments:
+        - {object} count - number of statements executed so far.
+        - {integer} totalCount - total number of statements in the given SQL string.
 
 ### Example usage
 Create a database from a SQL dump
@@ -156,13 +188,20 @@ Create a database from a SQL dump
             }
         }
     };
-    var successFn = function(){
-        alert("Successfully imported JSON to DB");
+    var successFn = function(count){
+        alert("Successfully imported JSON to DB; equivalent to "+count+" SQL statements");
     };
     var errorFn = function(error){
         alert("The following error occurred: "+error.message);
     };
-    cordova.plugins.sqlitePorter.importJsonToDb(db, json, successFn, errorFn);
+    var progressFn = function(current, total){
+        console.log("Imported "+current+"/"+total+" statements";
+    };
+    cordova.plugins.sqlitePorter.importJsonToDb(db, json, {
+        successFn: successFn,
+        errorFn: errorFn,
+        progressFn: progressFn
+    });
 
 
 Update an existing database
@@ -202,56 +241,82 @@ Update an existing database
             }
         }
     };
-    var successFn = function(){
-        alert("Successfully imported JSON to DB");
+    var successFn = function(count){
+        alert("Successfully imported JSON to DB; equivalent to "+count+" SQL statements");
     };
     var errorFn = function(error){
         alert("The following error occurred: "+error.message);
     };
-    cordova.plugins.sqlitePorter.importJsonToDb(db, json, successFn, errorFn);
+    var progressFn = function(current, total){
+        console.log("Imported "+current+"/"+total+" statements";
+    };
+    cordova.plugins.sqlitePorter.importJsonToDb(db, json, {
+        successFn: successFn,
+        errorFn: errorFn,
+        progressFn: progressFn
+    });
 
 ## exportDbToJson()
 
 Exports a SQLite DB as a JSON structure
 
-    cordova.plugins.sqlitePorter.exportDbToJson(db, successFn, dataOnly);
+    cordova.plugins.sqlitePorter.exportDbToJson(db, opts);
 
 ### Parameters
 
 - {Database} db - open SQLite database to export
-- {function} successFn - callback function to pass JSON structure to (as first parameter).
-- {boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported.
+- {object} opts - optional parameters:
+    - {function} successFn - callback function to execute after export is complete, with arguments:
+        - {object} json - exported JSON structure.
+        - {integer} count - number of SQL statements that exported JSON structure corresponds to.
+    - {boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.
 
 ### Example usage
 
     var db = window.openDatabase("Test", "1.0", "TestDB", 1 * 1024);
-    var successFn = function(json){
-        alert("Exported JSON: "+json);
-    };
-    cordova.plugins.sqlitePorter.exportDbToSql(db, successFn, false);
+    var successFn = function(json, count){
+            console.log("Exported JSON: "+json);
+            alert("Exported JSON contains equivalent of "+count+" SQL statements");
+        };
+    cordova.plugins.sqlitePorter.exportDbToSql(db, {
+        successFn: successFn
+    });
 
 ## wipeDb()
 
 Wipes all data from a database by dropping all existing tables.
 
-    cordova.plugins.sqlitePorter.wipeData(db, successFn, errorFn);
+    cordova.plugins.sqlitePorter.wipeData(db, opts);
 
 ### Parameters
 
 - {Database} db - open SQLite database to wipe
-- {function} successFn - callback function to execute once wipe is complete
-- {function} errorFn - callback function to execute on error during wipe
+- {object} opts - optional parameters:
+    - {function} successFn - callback function to execute once wipe is complete, called with arguments:
+        - {integer} count - number of tables dropped.
+    - {function} errorFn - callback function to execute on error during wipe, called with arguments:
+        - {object} error - object representing the error.
+    - {function} progressFn - callback function to execute after each successful table drop, called with arguments:
+        - {object} count - number of tables dropped so far.
+        - {integer} totalCount - total number of tables to drop.
 
 ### Example usage
 
     var db = window.openDatabase("Test", "1.0", "TestDB", 1 * 1024);
-    var successFn = function(){
-            alert("Successfully wiped DB");
-        };
-        var errorFn = function(error){
-            alert("The following error occurred: "+error.message);
-        };
-    cordova.plugins.sqlitePorter.wipeData(db, successFn, errorFn);
+    var successFn = function(count){
+        alert("Successfully wiped "+count+" tables");
+    };
+    var errorFn = function(error){
+        alert("The following error occurred: "+error.message);
+    };
+    var progressFn = function(current, total){
+        console.log("Wiped "+current+"/"+total+" tables";
+    };
+    cordova.plugins.sqlitePorter.wipeData(db, {
+        successFn: successFn,
+        errorFn: errorFn,
+        progressFn: progressFn
+    });
 
 ## Example projects
 
