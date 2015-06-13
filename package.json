@@ -1,5 +1,5 @@
 {
-    "version": "0.0.2",
+    "version": "0.0.3",
     "name": "uk.co.workingedge.cordova.plugin.sqliteporter",
     "cordova_name": "sqlite porter",
     "description": "Enables importing/exporting of SQLite databases to/from JSON/SQL.",
@@ -16,6 +16,16 @@
     "keywords": [
         "ecosystem:cordova",
         "cordova",
+        "cordova-android",
+        "cordova-amazon-fireos",
+        "cordova-ios",
+        "cordova-blackberry10",
+        "cordova-wp7",
+        "cordova-wp8",
+        "cordova-windows8",
+        "cordova-windows",
+        "cordova-tizen",
+        "cordova-browser",
         "phonegap",
         "database",
         "sqlite",
@@ -23,7 +33,18 @@
         "import",
         "export"
     ],
-    "platforms": [],
+    "platforms": [
+        "android",
+        "amazon-fireos",
+        "ios",
+        "blackberry10",
+        "wp7",
+        "wp8",
+        "windows8",
+        "windows",
+        "tizen",
+        "browser"
+    ],
     "engines": [
         {
             "name": "cordova",
