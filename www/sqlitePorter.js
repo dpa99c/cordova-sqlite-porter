@@ -350,17 +350,41 @@
 
             if(json.data.inserts){
                 for(var tableName in json.data.inserts){
+                    var _count = 0;
                     for(var i=0; i<json.data.inserts[tableName].length; i++){
+                        _count++;
+                        if(_count === 500){
+                            sql += separator;
+                            _count = 1;
+                        }
+
                         var _row = json.data.inserts[tableName][i];
                         var _fields = [];
                         var _values = [];
                         for(var col in _row){
                             _fields.push(col);
-                            _values.push("'" + sanitiseForSql(_row[col]) + "'");
+                            _values.push(sanitiseForSql(_row[col]));
                         }
-                        sql += "INSERT OR REPLACE INTO " + tableName + "(" + _fields.join(",") + ") VALUES (" + _values.join(",") + ")" + separator;
-                    }
 
+                        if(_count === 1){
+                            sql += "INSERT OR REPLACE INTO " + tableName + " SELECT";
+                            for(var j=0; j<_fields.length; j++){
+                                sql += " '"+_values[j]+"' AS '"+_fields[j]+"'";
+                                if(j < _fields.length-1){
+                                    sql += ",";
+                                }
+                            }
+                        }else{
+                            sql += " UNION SELECT ";
+                            for(var j=0; j<_values.length; j++){
+                                sql += " '"+_values[j]+"'";
+                                if(j < _values.length-1){
+                                    sql += ",";
+                                }
+                            }
+                        }
+                    }
+                    sql += separator;
                 }
             }
 
