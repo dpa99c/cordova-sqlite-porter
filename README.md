@@ -1,6 +1,17 @@
 SQLite Porter Cordova/Phonegap Plugin
 =================================
 
+## Contents
+
+* [Overview](#overview)
+* [Installation](#installation)
+* [Usage](#usage)
+* [JSON import optimisations](#json-import-optimisations)
+* [Example projects](#example-projects)
+* [License](#license)
+
+# Overview
+
 This Cordova/Phonegap plugin can be used to import/export to/from a SQLite database using either SQL or JSON.
 
 - Works on all Cordova platforms that [support HTML5 WebSQL DB in the WebView](http://docs.phonegap.com/en/4.0.0/cordova_storage_storage.md.html):
@@ -18,19 +29,12 @@ This can be used for platforms that don't have WebSQL in WebView (e.g. Windows) 
     - Windows Phone 8
 - Import/export either just the table data or the entire table structure as well.
 
-Usage scenarios
+## Usage scenarios
 
 - Create and populate a database from a database dump.
 - Update an existing database by importing inserts/updates/deletes.
 - Export and send data from a database.
 
-## Contents
-
-* [Installation](#installation)
-* [Usage](#usage)
-* [Example projects](#example-projects)
-* [License](#license)
- 
 # Installation
 
 ## Using the Cordova/Phonegap [CLI](http://docs.phonegap.com/en/edge/guide_cli_index.md.html)
@@ -329,21 +333,38 @@ Wipes all data from a database by dropping all existing tables.
         progressFn: progressFn
     });
 
-## Example projects
+# JSON import optimisations
 
-### HTML5 WebSQL
+The JSON structure passed to the [importJsonToDb()](#importjsontodb) function is parsed in order to generate corresponding SQL commands.
+In doing so, the following optimisations have been made to minimize time taken to import large amounts of data:
+
+## Batch inserts
+
+Using UNION SELECT syntax (see [this stackoverflow post](http://stackoverflow.com/a/5009740/777265) for details), INSERTS are grouped by up to 500 in a single SQL statement.
+This leads to significant performance gains when bulk importing data as to populate a database
+
+For example, in the [example project](https://github.com/dpa99c/cordova-sqlite-porter-example) illustrating use of this plugin,
+the complex database example is actually the [Chinook database](https://chinookdatabase.codeplex.com/) - a sample database which contains over 15,000 INSERTS in the SQL file.
+Running the example project on my Samsung Galaxy S4, importing this SQL file takes around 300 seconds (5 mins).
+Whereas the JSON equivalent (using UNION SELECTs) contains only 17 INSERT statements and importing this takes around 3 seconds - 100 times faster!
+
+Note: when using the [importSqlToDb()](#importsqltodb), you must make any optimisations in your SQL.
+
+# Example projects
+
+## HTML5 WebSQL
 
 [https://github.com/dpa99c/cordova-sqlite-porter-example](https://github.com/dpa99c/cordova-sqlite-porter-example)
 
 This example project illustrates how the plugin can be used to import/export data from a WebSQL database in the WebView.
 
-### Native SQLite
+## Native SQLite
 
 [https://github.com/dpa99c/cordova-sqlite-porter-example-native-plugin](https://github.com/dpa99c/cordova-sqlite-porter-example-native-plugin)
 
 This example project illustrates how the plugin can be used to import/export data from a native SQLite database using a [native SQLite plugin](https://github.com/litehelpers/Cordova-sqlite-storage)
 
-License
+# License
 ================
 
 The MIT License
