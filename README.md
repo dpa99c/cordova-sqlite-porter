@@ -1,6 +1,8 @@
 SQLite Porter Cordova/Phonegap Plugin
 =================================
 
+Git repo: https://github.com/dpa99c/cordova-sqlite-porter
+
 ## Contents
 
 * [Overview](#overview)
@@ -369,7 +371,7 @@ This example project illustrates how the plugin can be used to import/export dat
 
 The MIT License
 
-Copyright (c) 2015 Working Edge Ltd.
+Copyright (c) 2015 [Working Edge Ltd.](http://www.workingedge.co.uk)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
