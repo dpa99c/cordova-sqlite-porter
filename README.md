@@ -1,7 +1,7 @@
 SQLite Porter Cordova/Phonegap Plugin
-=================================
+=====================================
 
-Git repo: https://github.com/dpa99c/cordova-sqlite-porter
+**Git repo: [https://github.com/dpa99c/cordova-sqlite-porter](https://github.com/dpa99c/cordova-sqlite-porter)**
 
 ## Contents
 
