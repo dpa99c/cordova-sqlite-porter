@@ -332,7 +332,7 @@
      */
     sqlitePorter.importJsonToDb = function (db, json, opts){
         opts = opts || {};
-        var sql = "";
+        var mainSql = "", createIndexSql = "";
 
         try{
             if(typeof(json) === "string"){
@@ -340,11 +340,16 @@
             }
             if(json.structure){
                 for(var tableName in json.structure.tables){
-                    sql += "DROP TABLE IF EXISTS " + tableName + separator
+                    mainSql += "DROP TABLE IF EXISTS " + tableName + separator
                     + "CREATE TABLE " + tableName + json.structure.tables[tableName] + separator;
                 }
                 for(var i=0; i<json.structure.otherSQL.length; i++){
-                    sql += json.structure.otherSQL[i] + separator;
+                    var command = json.structure.otherSQL[i];
+                    if(command.match(/CREATE INDEX/i)){
+                        createIndexSql += json.structure.otherSQL[i] + separator;
+                    }else{
+                        mainSql += json.structure.otherSQL[i] + separator;
+                    }
                 }
             }
 
@@ -354,7 +359,7 @@
                     for(var i=0; i<json.data.inserts[tableName].length; i++){
                         _count++;
                         if(_count === 500){
-                            sql += separator;
+                            mainSql += separator;
                             _count = 1;
                         }
 
@@ -367,24 +372,24 @@
                         }
 
                         if(_count === 1){
-                            sql += "INSERT OR REPLACE INTO " + tableName + " SELECT";
+                            mainSql += "INSERT OR REPLACE INTO " + tableName + " SELECT";
                             for(var j=0; j<_fields.length; j++){
-                                sql += " '"+_values[j]+"' AS '"+_fields[j]+"'";
+                                mainSql += " '"+_values[j]+"' AS '"+_fields[j]+"'";
                                 if(j < _fields.length-1){
-                                    sql += ",";
+                                    mainSql += ",";
                                 }
                             }
                         }else{
-                            sql += " UNION SELECT ";
+                            mainSql += " UNION SELECT ";
                             for(var j=0; j<_values.length; j++){
-                                sql += " '"+_values[j]+"'";
+                                mainSql += " '"+_values[j]+"'";
                                 if(j < _values.length-1){
-                                    sql += ",";
+                                    mainSql += ",";
                                 }
                             }
                         }
                     }
-                    sql += separator;
+                    mainSql += separator;
                 }
             }
 
@@ -393,12 +398,12 @@
                     for(var i=0; i<json.data.deletes[tableName].length; i++){
                         var _count = 0,
                             _row = json.data.deletes[tableName][i];
-                        sql += "DELETE FROM " + tableName;
+                        mainSql += "DELETE FROM " + tableName;
                         for(var col in _row){
-                            sql += (_count === 0 ? " WHERE " : " AND ") + col + "='"+sanitiseForSql(_row[col])+"'";
+                            mainSql += (_count === 0 ? " WHERE " : " AND ") + col + "='"+sanitiseForSql(_row[col])+"'";
                             _count++;
                         }
-                        sql += separator;
+                        mainSql += separator;
                     }
                 }
             }
@@ -408,24 +413,45 @@
                 for( tableName in json.data.updates){
                     for(i=0; i<json.data.updates[tableName].length; i++){
                         var _row = json.data.updates[tableName][i];
-                        sql += "UPDATE " + tableName;
+                        mainSql += "UPDATE " + tableName;
 
                         _count = 0;
                         for(_col in _row.set){
-                            sql += (_count === 0 ? " SET " : ", ") + _col + "='" + sanitiseForSql(_row.set[_col]) + "'";
+                            mainSql += (_count === 0 ? " SET " : ", ") + _col + "='" + sanitiseForSql(_row.set[_col]) + "'";
                         }
 
                         _count = 0;
                         for(_col in _row.where){
-                            sql += (_count === 0 ? " WHERE " : " AND ") + _col + "='" + sanitiseForSql(_row.where[_col]) + "'";
+                            mainSql += (_count === 0 ? " WHERE " : " AND ") + _col + "='" + sanitiseForSql(_row.where[_col]) + "'";
                         }
 
-                        sql += separator;
+                        mainSql += separator;
                     }
                 }
             }
 
-            sqlitePorter.importSqlToDb(db, sql, opts);
+            // If creating indexes, do it in a different transaction after other SQL to optimise performance
+            if(createIndexSql){
+                sqlitePorter.importSqlToDb(db, mainSql, extend({}, opts, {
+                    successFn:function(mainTotalCount){
+                        sqlitePorter.importSqlToDb(db, createIndexSql, extend({}, opts, {
+                            successFn:function(totalCount){
+                                if(opts.successFn){
+                                    opts.successFn(mainTotalCount+totalCount);
+                                }
+                            },
+                            progressFn:function(count, totalCount){
+                                if(opts.progressFn){
+                                    opts.progressFn(mainTotalCount+count, mainTotalCount+totalCount);
+                                }
+                            }
+                        }));
+                    }
+                }));
+            }else{
+                sqlitePorter.importSqlToDb(db, mainSql, opts);
+            }
+
         }catch(e){
             e.message = "Failed to parse JSON structure to SQL: "+ e.message;
             if(opts.errorFn){
@@ -505,6 +531,19 @@
      */
     function sanitiseForSql(value){
         return (value+"").replace(/'([^']|$)/g,"''$1");
+    }
+
+    /**
+     * Applies properties to the 1st object specified from the 2nd, 3rd, 4th, etc.
+     * Emulates jQuery's $.extend()
+     * @returns {object}
+     */
+    function extend(){
+        for(var i=1; i<arguments.length; i++)
+            for(var key in arguments[i])
+                if(arguments[i].hasOwnProperty(key))
+                    arguments[0][key] = arguments[i][key];
+        return arguments[0];
     }
 
     module.exports = sqlitePorter;

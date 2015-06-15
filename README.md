@@ -1,7 +1,5 @@
 SQLite Porter Cordova/Phonegap Plugin
-=====================================
-
-**Git repo: [https://github.com/dpa99c/cordova-sqlite-porter](https://github.com/dpa99c/cordova-sqlite-porter)**
+=================================
 
 ## Contents
 
@@ -340,9 +338,10 @@ Wipes all data from a database by dropping all existing tables.
 The JSON structure passed to the [importJsonToDb()](#importjsontodb) function is parsed in order to generate corresponding SQL commands.
 In doing so, the following optimisations have been made to minimize time taken to import large amounts of data:
 
-## Batch inserts
+## Batched inserts
 
-Using UNION SELECT syntax (see [this stackoverflow post](http://stackoverflow.com/a/5009740/777265) for details), INSERTS are grouped by up to 500 in a single SQL statement.
+Using UNION SELECT syntax (see [this stackoverflow post](http://stackoverflow.com/a/5009740/777265) for details),
+so if the JSON structure contains "inserts", they are grouped by up to 500 in a single SQL statement.
 This leads to significant performance gains when bulk importing data as to populate a database
 
 For example, in the [example project](https://github.com/dpa99c/cordova-sqlite-porter-example) illustrating use of this plugin,
@@ -351,6 +350,11 @@ Running the example project on my Samsung Galaxy S4, importing this SQL file tak
 Whereas the JSON equivalent (using UNION SELECTs) contains only 17 INSERT statements and importing this takes around 3 seconds - 100 times faster!
 
 Note: when using the [importSqlToDb()](#importsqltodb), you must make any optimisations in your SQL.
+
+## Delayed index creation
+
+If the JSON structure "otherSql" key contains CREATE INDEX statements, these are executed after all other SQL commands, and in a separate transaction
+in order to optimise performance when inserting large amounts of data.
 
 # Example projects
 
@@ -371,7 +375,7 @@ This example project illustrates how the plugin can be used to import/export dat
 
 The MIT License
 
-Copyright (c) 2015 [Working Edge Ltd.](http://www.workingedge.co.uk)
+Copyright (c) 2015 Working Edge Ltd.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
