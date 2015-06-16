@@ -30,11 +30,15 @@
 (function() {
     var sqlitePorter = {};
 
+    // Default maximum number of statements to use for batch inserts for bulk importing data via JSON.
+    var DEFAULT_BATCH_INSERT_SIZE = 250;
+
     // Statement separator
     var separator = ";\n";
 
     // Matches statements based on semicolons outside of quotes
     var statementRegEx = /(?!\s|;|$)(?:[^;"']*(?:"(?:\\.|[^\\"])*"|'(?:\\.|[^\\'])*')?)*/g;
+
 
     /**
      * Executes a set of SQL statements against the defined database.
@@ -328,6 +332,10 @@
      *          <li>{integer} totalCount - total number of statements in the given SQL string.</li>
      *      <ul>
      *  </li>
+     *  <li>{integer} batchInsertSize - maximum number of inserts to batch into a SQL statement using UNION SELECT method.
+     *  Defaults to 250 if not specified. Set to 1 to disable batching and perform 1 insert per SQL statement.
+     *  You can tweak this to optimize performance but numbers higher than 500 may cause the app to run out of memory and crash.
+     *  </li>
      * </ul>
      */
     sqlitePorter.importJsonToDb = function (db, json, opts){
@@ -353,14 +361,14 @@
                 }
             }
 
+            var batchInsertSize = opts.batchInsertSize ? opts.batchInsertSize : DEFAULT_BATCH_INSERT_SIZE;
             if(json.data.inserts){
                 for(var tableName in json.data.inserts){
                     var _count = 0;
                     for(var i=0; i<json.data.inserts[tableName].length; i++){
-                        _count++;
-                        if(_count === 500){
+                        if(_count === batchInsertSize){
                             mainSql += separator;
-                            _count = 1;
+                            _count = 0;
                         }
 
                         var _row = json.data.inserts[tableName][i];
@@ -371,7 +379,7 @@
                             _values.push(sanitiseForSql(_row[col]));
                         }
 
-                        if(_count === 1){
+                        if(_count === 0){
                             mainSql += "INSERT OR REPLACE INTO " + tableName + " SELECT";
                             for(var j=0; j<_fields.length; j++){
                                 mainSql += " '"+_values[j]+"' AS '"+_fields[j]+"'";
@@ -388,6 +396,7 @@
                                 }
                             }
                         }
+                        _count++;
                     }
                     mainSql += separator;
                 }

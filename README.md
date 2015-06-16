@@ -178,6 +178,9 @@ Can be used to import data into the database and/or create the table structure.
     - {function} progressFn - callback function to execute after each successful execution of SQL statement, called with arguments:
         - {object} count - number of statements executed so far.
         - {integer} totalCount - total number of statements in the given SQL string.
+    - {integer} batchInsertSize - maximum number of inserts to batch into a SQL statement using UNION SELECT method.
+    Defaults to 250 if not specified. Set to 1 to disable batching and perform 1 insert per SQL statement.
+    You can tweak this to optimize performance but numbers higher than 500 may cause the app to run out of memory and crash.
 
 ### Example usage
 Create a database from a SQL dump
@@ -195,10 +198,10 @@ Create a database from a SQL dump
         "data":{
             "inserts":{
                 "Artist":[
-                    {
-                        "Id":"1",
-                        "Title":"Fred"
-                    }
+                    {"Id":"1","Title":"Fred"},
+                    {"Id":"2","Title":"Bob"},
+                    {"Id":"3","Title":"Jack"},
+                    {"Id":"4","Title":"John"}
                 ]
             }
         }
@@ -215,7 +218,8 @@ Create a database from a SQL dump
     cordova.plugins.sqlitePorter.importJsonToDb(db, json, {
         successFn: successFn,
         errorFn: errorFn,
-        progressFn: progressFn
+        progressFn: progressFn,
+        batchInsertSize: 500
     });
 
 
@@ -226,31 +230,27 @@ Update an existing database
         "data":{
             "inserts":{
                 "Artist":[
-                    {
-                        "Id":"1",
-                        "Title":"Fred"
-                    }
+                    {"Id":"1","Title":"Fred"},
+                    {"Id":"2","Title":"Bob"}
                 ]
             },
             "updates":{
-                "Artist":[
-                    {
-                        "set":
-                            {
-                                "Title":"Susan"
-                            },
-                        "where":
-                            {
-                                "Id":"2"
-                            }
+                "Artist":
+                    [
+                        {
+                            "set": {"Title":"Jill"},
+                            "where": {"Id":"3"}
+                        },
+                        {
+                            "set": {"Title":"Susan"},
+                            "where": {"Id":"4"}
                         }
                     ]
                 },
                 "deletes":{
                     "Artist":[
-                        {
-                            "Id":"5"
-                        }
+                        {"Id":"5"},
+                        {"Id":"6"}
                     ]
                 }
             }
@@ -340,14 +340,17 @@ In doing so, the following optimisations have been made to minimize time taken t
 
 ## Batched inserts
 
-Using UNION SELECT syntax (see [this stackoverflow post](http://stackoverflow.com/a/5009740/777265) for details),
-so if the JSON structure contains "inserts", they are grouped by up to 500 in a single SQL statement.
-This leads to significant performance gains when bulk importing data as to populate a database
+When importing large amounts of data to the database, INSERT statements can be time consuming. Therefore, the plugin uses the UNION SELECT method (see [this stackoverflow post](http://stackoverflow.com/a/5009740/777265) for details),
+if the JSON structure contains "inserts", to batch multiple inserts in a single SQL statement, which leads to significant performance gains when bulk importing data as to populate a database.
 
-For example, in the [example project](https://github.com/dpa99c/cordova-sqlite-porter-example) illustrating use of this plugin,
+The default batch size is a maximum of 250 inserts per INSERT statement; this can be overridden using the `batchInsertSize` option.
+Setting this to 1 disables batching and performs 1 insert per SQL statement.
+You can tweak this to optimize performance but numbers higher than 500 may cause the app to run out of memory and crash.
+
+In the [example project](https://github.com/dpa99c/cordova-sqlite-porter-example) illustrating use of this plugin,
 the complex database example is actually the [Chinook database](https://chinookdatabase.codeplex.com/) - a sample database which contains over 15,000 INSERTS in the SQL file.
-Running the example project on my Samsung Galaxy S4, importing this SQL file takes around 300 seconds (5 mins).
-Whereas the JSON equivalent (using UNION SELECTs) contains only 17 INSERT statements and importing this takes around 3 seconds - 100 times faster!
+Running the example project on my Samsung Galaxy S4 with no batching, importing the SQL file takes around 300 seconds (5 mins).
+Whereas the JSON equivalent, using UNION SELECTs with a batch size of 500, has only 17 INSERT statements and importing this takes around 3 seconds - 100 times faster!
 
 Note: when using the [importSqlToDb()](#importsqltodb), you must make any optimisations in your SQL.
 
