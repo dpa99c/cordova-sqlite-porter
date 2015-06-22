@@ -293,7 +293,7 @@ Exports a SQLite DB as a JSON structure
             console.log("Exported JSON: "+json);
             alert("Exported JSON contains equivalent of "+count+" SQL statements");
         };
-    cordova.plugins.sqlitePorter.exportDbToSql(db, {
+    cordova.plugins.sqlitePorter.exportDbToJson(db, {
         successFn: successFn
     });
 
