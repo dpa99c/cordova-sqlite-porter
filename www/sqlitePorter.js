@@ -149,7 +149,7 @@
                                         var _values = [];
                                         for (col in dataRow) {
                                             _fields.push(col);
-                                            _values.push("'" + dataRow[col] + "'");
+                                            _values.push("'" + sanitiseForSql(dataRow[col]) + "'");
                                         }
                                         exportSQL += "INSERT OR REPLACE INTO " + tableName + "(" + _fields.join(",") + ") VALUES (" + _values.join(",") + ")" + separator;
                                         statementCount++;
