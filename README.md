@@ -29,6 +29,8 @@ This can be used for platforms that don't have WebSQL in WebView (e.g. Windows) 
     - Windows Phone 8
 - Import/export either just the table data or the entire table structure as well.
 
+The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io/#/package/uk.co.workingedge.cordova.plugin.sqliteporter)(Cordova CLI 3/4) and on [npm](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) (Cordova CLI 5+) as `uk.co.workingedge.cordova.plugin.sqliteporter`
+
 ## Usage scenarios
 
 - Create and populate a database from a database dump.
@@ -51,11 +53,11 @@ For example, to install for the Android platform
     $ plugman install --plugin=uk.co.workingedge.cordova.plugin.sqliteporter --platform=android --project=platforms/android --plugins_dir=plugins
 
 ## PhoneGap Build
-Add the following xml to your config.xml to use the latest version of this plugin from [plugins.cordova.io](http://plugins.cordova.io):
+Add the following xml to your config.xml to use the latest version of this plugin from [the Cordova Registry](http://plugins.cordova.io/#/package/uk.co.workingedge.cordova.plugin.sqliteporter) :
 
     <gap:plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" source="plugins.cordova.io" />
 
-or from [npmjs.com](https://npmjs.com/):
+or from [npm](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter):
 
     <gap:plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" source="npm" />
 
