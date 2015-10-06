@@ -29,7 +29,7 @@ This can be used for platforms that don't have WebSQL in WebView (e.g. Windows) 
     - Windows Phone 8
 - Import/export either just the table data or the entire table structure as well.
 
-The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io/#/package/uk.co.workingedge.cordova.plugin.sqliteporter)(Cordova CLI 3/4) and on [npm](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) (Cordova CLI 5+) as `uk.co.workingedge.cordova.plugin.sqliteporter`
+The plugin is registered on [npm](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) as `uk.co.workingedge.cordova.plugin.sqliteporter`
 
 ## Usage scenarios
 
@@ -44,6 +44,8 @@ The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io
     $ cordova plugin add uk.co.workingedge.cordova.plugin.sqliteporter
     $ phonegap plugin add uk.co.workingedge.cordova.plugin.sqliteporter
 
+**NOTE**: Make sure your Cordova CLI version is 5.0.0+ (check with `cordova -v`). Cordova 4.x and below uses the now deprecated [Cordova Plugin Registry](http://plugins.cordova.io) as its plugin repository, so using a version of Cordova 4.x or below will result in installing an [old version](http://plugins.cordova.io/#/package/uk.co.workingedge.cordova.plugin.sqliteporter) of this plugin.
+
 ## Using [Cordova Plugman](https://github.com/apache/cordova-plugman)
 
     $ plugman install --plugin=uk.co.workingedge.cordova.plugin.sqliteporter --platform=<platform> --project=<project_path> --plugins_dir=plugins
@@ -53,11 +55,7 @@ For example, to install for the Android platform
     $ plugman install --plugin=uk.co.workingedge.cordova.plugin.sqliteporter --platform=android --project=platforms/android --plugins_dir=plugins
 
 ## PhoneGap Build
-Add the following xml to your config.xml to use the latest version of this plugin from [the Cordova Registry](http://plugins.cordova.io/#/package/uk.co.workingedge.cordova.plugin.sqliteporter) :
-
-    <gap:plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" source="plugins.cordova.io" />
-
-or from [npm](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter):
+Add the following xml to your config.xml to use the latest version of this plugin from [npm](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter):
 
     <gap:plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" source="npm" />
 
