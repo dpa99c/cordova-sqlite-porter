@@ -103,7 +103,7 @@ Create a database from a SQL dump
         alert("The following error occurred: "+error.message);
     };
     var progressFn = function(current, total){
-        console.log("Imported "+current+"/"+total+" statements";
+        console.log("Imported "+current+"/"+total+" statements");
     };
     cordova.plugins.sqlitePorter.importSqlToDb(db, sql, {
         successFn: successFn,
@@ -301,7 +301,7 @@ Exports a SQLite DB as a JSON structure
 
 Wipes all data from a database by dropping all existing tables.
 
-    cordova.plugins.sqlitePorter.wipeData(db, opts);
+    cordova.plugins.sqlitePorter.wipeDb(db, opts);
 
 ### Parameters
 
@@ -327,7 +327,7 @@ Wipes all data from a database by dropping all existing tables.
     var progressFn = function(current, total){
         console.log("Wiped "+current+"/"+total+" tables";
     };
-    cordova.plugins.sqlitePorter.wipeData(db, {
+    cordova.plugins.sqlitePorter.wipeDb(db, {
         successFn: successFn,
         errorFn: errorFn,
         progressFn: progressFn
