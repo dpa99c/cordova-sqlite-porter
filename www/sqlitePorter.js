@@ -138,8 +138,8 @@
             if (tables.n < tables.sqlTables.length) {
                 db.transaction(
                     function (tx) {
-                        var tableName = tables.sqlTables[tables.n],
-                            sqlStatement = "SELECT * FROM " + tableName;
+                        var tableName = sqlUnescape(tables.sqlTables[tables.n]),
+                            sqlStatement = "SELECT * FROM " + sqlEscape(tableName);
                         tx.executeSql(sqlStatement, [],
                             function (tx, rslt) {
                                 if (rslt.rows) {
@@ -148,10 +148,10 @@
                                         var _fields = [];
                                         var _values = [];
                                         for (col in dataRow) {
-                                            _fields.push(col);
+                                            _fields.push(sqlEscape(col));
                                             _values.push("'" + sanitiseForSql(dataRow[col]) + "'");
                                         }
-                                        exportSQL += "INSERT OR REPLACE INTO " + tableName + "(" + _fields.join(",") + ") VALUES (" + _values.join(",") + ")" + separator;
+                                        exportSQL += "INSERT OR REPLACE INTO " + sqlEscape(tableName) + "(" + _fields.join(",") + ") VALUES (" + _values.join(",") + ")" + separator;
                                         statementCount++;
                                     }
                                 }
@@ -175,8 +175,8 @@
                             for (var i = 0; i < results.rows.length; i++) {
                                 var row = results.rows.item(i);
                                 if (row.sql != null && row.sql.indexOf("CREATE TABLE") != -1 && row.sql.indexOf("__") == -1) {
-                                    var tableName = trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]);
-                                    sqlStatements.push("DROP TABLE IF EXISTS " + tableName);
+                                    var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
+                                    sqlStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
                                 }
                                 if(row.sql != null && row.sql.indexOf("__") == -1){
                                     sqlStatements.push(row.sql);
@@ -231,8 +231,8 @@
             if (tables.n < tables.sqlTables.length) {
                 db.transaction(
                     function (tx) {
-                        var tableName = tables.sqlTables[tables.n],
-                            sqlStatement = "SELECT * FROM " + tableName;
+                        var tableName = sqlUnescape(tables.sqlTables[tables.n]),
+                            sqlStatement = "SELECT * FROM " + sqlEscape(tableName);
                         tx.executeSql(sqlStatement, [],
                             function (tx, rslt) {
                                 if (rslt.rows) {
@@ -274,8 +274,8 @@
 
                                 if(row.sql != null && row.sql.indexOf("__") == -1){
                                     if (row.sql.indexOf("CREATE TABLE") != -1){
-                                        var tableName = trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]),
-                                            tableStructure = trimWhitespace(row.sql.replace("CREATE TABLE " + tableName, ""));
+                                        var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0])),
+                                            tableStructure = trimWhitespace(row.sql.replace("CREATE TABLE " + sqlEscape(tableName), ""));
                                         json.structure.tables[tableName] = tableStructure.replace(/\s+/g," ");
                                         statementCount+=2; // One for DROP, one for create
                                     }else{
@@ -348,8 +348,8 @@
             }
             if(json.structure){
                 for(var tableName in json.structure.tables){
-                    mainSql += "DROP TABLE IF EXISTS " + tableName + separator
-                    + "CREATE TABLE " + tableName + json.structure.tables[tableName] + separator;
+                    mainSql += "DROP TABLE IF EXISTS " + sqlEscape(tableName) + separator
+                    + "CREATE TABLE " + sqlEscape(tableName) + json.structure.tables[tableName] + separator;
                 }
                 for(var i=0; i<json.structure.otherSQL.length; i++){
                     var command = json.structure.otherSQL[i];
@@ -380,7 +380,7 @@
                         }
 
                         if(_count === 0){
-                            mainSql += "INSERT OR REPLACE INTO " + tableName + " SELECT";
+                            mainSql += "INSERT OR REPLACE INTO " + sqlEscape(tableName) + " SELECT";
                             for(var j=0; j<_fields.length; j++){
                                 mainSql += " '"+_values[j]+"' AS '"+_fields[j]+"'";
                                 if(j < _fields.length-1){
@@ -407,7 +407,7 @@
                     for(var i=0; i<json.data.deletes[tableName].length; i++){
                         var _count = 0,
                             _row = json.data.deletes[tableName][i];
-                        mainSql += "DELETE FROM " + tableName;
+                        mainSql += "DELETE FROM " + sqlEscape(tableName);
                         for(var col in _row){
                             mainSql += (_count === 0 ? " WHERE " : " AND ") + col + "='"+sanitiseForSql(_row[col])+"'";
                             _count++;
@@ -422,7 +422,7 @@
                 for( tableName in json.data.updates){
                     for(i=0; i<json.data.updates[tableName].length; i++){
                         var _row = json.data.updates[tableName][i];
-                        mainSql += "UPDATE " + tableName;
+                        mainSql += "UPDATE " + sqlEscape(tableName);
 
                         _count = 0;
                         for(_col in _row.set){
@@ -507,7 +507,7 @@
                                 var row = results.rows.item(i);
                                 if (row.sql != null && row.sql.indexOf("CREATE TABLE") != -1 && row.sql.indexOf("__") == -1) {
                                     var tableName = trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]);
-                                    dropStatements.push("DROP TABLE IF EXISTS " + tableName);
+                                    dropStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
                                 }
                             }
                         }
@@ -540,6 +540,31 @@
      */
     function sanitiseForSql(value){
         return (value+"").replace(/'([^']|$)/g,"''$1");
+    }
+
+    /**
+     * Escapes the given value if it contains special characters by wrapping it with back-ticks: value => `value`.
+     * @param {string} value - unescaped value
+     * @return {string} escaped value
+     */
+    function sqlEscape(value){
+        if(value.match(/[_-]+/)){
+            value = '`'+value+'`';
+        }
+        return value;
+    }
+
+    /**
+     * Unescapes the given value if it's escaped with back-ticks: `value` => value.
+     * @param {string} value - unescaped value
+     * @return {string} escaped value
+     */
+    function sqlUnescape(value){
+        var matchesEscaped = value.match(/`([^`]+)`/);
+        if(matchesEscaped){
+            value = matchesEscaped[1];
+        }
+        return value;
     }
 
     /**
