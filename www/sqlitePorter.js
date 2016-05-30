@@ -195,8 +195,9 @@
                             function (transaction, res) {
                                 var sqlTables = [];
                                 for (var k = 0; k < res.rows.length; k++) {
-                                    if (res.rows.item(k).tbl_name.indexOf("__") == -1) {
-                                        sqlTables.push(res.rows.item(k).tbl_name);
+                                    var tableName = res.rows.item(k).tbl_name;
+                                    if (tableName.indexOf("__") == -1 && !isReservedTable(tableName)) {
+                                        sqlTables.push(tableName);
                                     }
                                 }
                                 exportTables({
@@ -274,10 +275,12 @@
 
                                 if(row.sql != null && row.sql.indexOf("__") == -1){
                                     if (row.sql.indexOf("CREATE TABLE") != -1){
-                                        var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0])),
-                                            tableStructure = trimWhitespace(row.sql.replace("CREATE TABLE " + sqlEscape(tableName), ""));
-                                        json.structure.tables[tableName] = tableStructure.replace(/\s+/g," ");
-                                        statementCount+=2; // One for DROP, one for create
+                                        var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
+                                        if(!isReservedTable(tableName)){
+                                            var tableStructure = trimWhitespace(row.sql.replace("CREATE TABLE " + sqlEscape(tableName), ""));
+                                            json.structure.tables[tableName] = tableStructure.replace(/\s+/g," ");
+                                            statementCount+=2; // One for DROP, one for create
+                                        }
                                     }else{
                                         json.structure.otherSQL.push(row.sql.replace(/\s+/g," "));
                                         statementCount++;
@@ -506,8 +509,10 @@
                             for (var i = 0; i < results.rows.length; i++) {
                                 var row = results.rows.item(i);
                                 if (row.sql != null && row.sql.indexOf("CREATE TABLE") != -1 && row.sql.indexOf("__") == -1) {
-                                    var tableName = trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]);
-                                    dropStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
+                                    var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
+                                    if(!isReservedTable(tableName)){
+                                        dropStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
+                                    }
                                 }
                             }
                         }
@@ -578,6 +583,15 @@
                 if(arguments[i].hasOwnProperty(key))
                     arguments[0][key] = arguments[i][key];
         return arguments[0];
+    }
+
+    /**
+     * Indicates if given table name is a reserved SQLite meta-table.
+     * @param {string} tableName - name of table to check
+     * @returns {boolean} true if table is a reserved SQLite table
+     */
+    function isReservedTable(tableName){
+        return !!tableName.match(/^sqlite_/);
     }
 
     module.exports = sqlitePorter;
