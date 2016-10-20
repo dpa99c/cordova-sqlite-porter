@@ -1,4 +1,4 @@
-SQLite Porter Cordova/Phonegap Plugin
+SQLite Porter Cordova/Phonegap Plugin [![Latest Stable Version](https://img.shields.io/npm/v/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) [![Total Downloads](https://img.shields.io/npm/dt/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://npm-stat.com/charts.html?package=uk.co.workingedge.cordova.plugin.sqliteporter)
 =================================
 
 ## Contents
