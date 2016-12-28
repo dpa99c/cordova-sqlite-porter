@@ -385,7 +385,11 @@
                         if(_count === 0){
                             mainSql += "INSERT OR REPLACE INTO " + sqlEscape(tableName) + " SELECT";
                             for(var j=0; j<_fields.length; j++){
-                                mainSql += " '"+_values[j]+"' AS '"+_fields[j]+"'";
+                                if(_values[j]=='null'){
+                                    mainSql += " " + _values[j] + " AS '" + _fields[j] + "'";
+                                }else {
+                                    mainSql += " '" + _values[j] + "' AS '" + _fields[j] + "'";
+                                }
                                 if(j < _fields.length-1){
                                     mainSql += ",";
                                 }
@@ -393,7 +397,11 @@
                         }else{
                             mainSql += " UNION SELECT ";
                             for(var j=0; j<_values.length; j++){
-                                mainSql += " '"+_values[j]+"'";
+                                if(_values[j]=='null'){
+                                    mainSql += " "+_values[j];
+                                }else {
+                                    mainSql += " '"+_values[j]+"'";
+                                }
                                 if(j < _values.length-1){
                                     mainSql += ",";
                                 }
