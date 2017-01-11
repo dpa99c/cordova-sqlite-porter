@@ -129,13 +129,14 @@
      *      <ul>
      *  </li>
      *  <li>{boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.</li>
+     *  <li>{boolean} structureOnly - if true, only table structure will be exported. Otherwise, row will also be exported. Defaults to false.</li>
      */
     sqlitePorter.exportDbToSql = function (db, opts){
         opts = opts || {};
         var exportSQL = "", statementCount = 0;
 
         var exportTables = function (tables) {
-            if (tables.n < tables.sqlTables.length) {
+            if (tables.n < tables.sqlTables.length && !opts.structureOnly) {
                 db.transaction(
                     function (tx) {
                         var tableName = sqlUnescape(tables.sqlTables[tables.n]),
@@ -223,13 +224,14 @@
      *      <ul>
      *  </li>
      *  <li>{boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.</li>
+     *  <li>{boolean} structureOnly - if true, only table structure will be exported. Otherwise, row will also be exported. Defaults to false.</li>
      */
     sqlitePorter.exportDbToJson = function (db, opts){
         opts = opts || {};
         var json = {}, statementCount = 0;
 
         var exportTables = function (tables) {
-            if (tables.n < tables.sqlTables.length) {
+            if (tables.n < tables.sqlTables.length && !opts.structureOnly) {
                 db.transaction(
                     function (tx) {
                         var tableName = sqlUnescape(tables.sqlTables[tables.n]),

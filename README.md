@@ -147,6 +147,7 @@ Exports a SQLite DB as a set of SQL statements.
         - {string} sql - exported SQL statements combined into a single string.
         - {integer} count - number of SQL statements in exported string.
     - {boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.
+    - {boolean} structureOnly - if true, only table structure will be exported. Otherwise, row will also be exported. Defaults to false.
 
 ### Example usage
 
@@ -285,6 +286,7 @@ Exports a SQLite DB as a JSON structure
         - {object} json - exported JSON structure.
         - {integer} count - number of SQL statements that exported JSON structure corresponds to.
     - {boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.
+    - {boolean} structureOnly - if true, only table structure will be exported. Otherwise, row will also be exported. Defaults to false.
 
 ### Example usage
 
