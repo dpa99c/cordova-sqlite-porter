@@ -150,7 +150,7 @@
                                         var _values = [];
                                         for (col in dataRow) {
                                             _fields.push(sqlEscape(col));
-                                            _values.push("'" + sanitiseForSql(dataRow[col]) + "'");
+                                            _values.push(dataRow[col] === null ? "NULL" : "'" + sanitiseForSql(dataRow[col]) + "'");
                                         }
                                         exportSQL += "INSERT OR REPLACE INTO " + sqlEscape(tableName) + "(" + _fields.join(",") + ") VALUES (" + _values.join(",") + ")" + separator;
                                         statementCount++;
