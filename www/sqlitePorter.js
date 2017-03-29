@@ -74,6 +74,9 @@
                     .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm,"") // strip out comments
                     .match(statementRegEx);
 
+                if(statements === null || (Array.isArray && !Array.isArray(statements)))
+                    statements = [];
+
                 function handleError(e){
                     if(opts.errorFn){
                         opts.errorFn(e);
@@ -102,7 +105,7 @@
                 }
 
                 // Strip empty statements
-                for(var i=0; i<statements.length; i++){
+                for(var i = 0; i < statements.length; i++){
                     if(!statements[i]){
                         delete statements[i];
                     }
