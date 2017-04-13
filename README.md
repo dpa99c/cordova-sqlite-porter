@@ -255,12 +255,12 @@ Update an existing database
                         }
                     ]
                 },
-                "deletes":{
-                    "Artist":[
-                        {"Id":"5"},
-                        {"Id":"6"}
-                    ]
-                }
+            },
+            "deletes":{
+                "Artist":[
+                    {"Id":"5"},
+                    {"Id":"6"}
+                ]
             }
         }
     };
