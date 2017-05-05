@@ -440,11 +440,13 @@
                         _count = 0;
                         for(_col in _row.set){
                             mainSql += (_count === 0 ? " SET " : ", ") + _col + "='" + sanitiseForSql(_row.set[_col]) + "'";
+                            _count++;
                         }
 
                         _count = 0;
                         for(_col in _row.where){
                             mainSql += (_count === 0 ? " WHERE " : " AND ") + _col + "='" + sanitiseForSql(_row.where[_col]) + "'";
+                            _count++;
                         }
 
                         mainSql += separator;
