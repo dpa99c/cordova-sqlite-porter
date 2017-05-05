@@ -556,6 +556,7 @@
      * @returns {string} sanitised value
      */
     function sanitiseForSql(value){
+        if (value === null || value === undefined) { return null; }
         return (value+"").replace(/'([^']|$)/g,"''$1");
     }
 
