@@ -247,7 +247,7 @@
                                         var dataRow = rslt.rows.item(m);
                                         var _row = {};
                                         for (col in dataRow) {
-                                            _row[col] = dataRow[col];
+                                            _row[col] = dataRowToJsonData(dataRow[col]);
                                         }
                                         json.data.inserts[tableName].push(_row);
                                         statementCount++;
@@ -443,11 +443,13 @@
                         _count = 0;
                         for(_col in _row.set){
                             mainSql += (_count === 0 ? " SET " : ", ") + _col + "='" + sanitiseForSql(_row.set[_col]) + "'";
+                            _count++;
                         }
 
                         _count = 0;
                         for(_col in _row.where){
                             mainSql += (_count === 0 ? " WHERE " : " AND ") + _col + "='" + sanitiseForSql(_row.where[_col]) + "'";
+                            _count++;
                         }
 
                         mainSql += separator;
@@ -540,6 +542,18 @@
         );
     };
 
+    /**
+     * Converts "null", "false", "true", and "undefined" fields to their properly typed null, false, true, and undefined equivalents
+     * @param {string} data - raw string from db
+     * @returns {object} boolean, null, or undefined if the original data
+     */
+    function dataRowToJsonData(data){
+        if (data === null || data === "null") return null;
+        if (data === undefined || data === "undefined") return undefined;
+        if (data === true || data === "true") return true;
+        if (data === false || data === "false") return false;
+        return data;
+    }
 
     /**
      * Trims leading and trailing whitespace from a string
@@ -557,6 +571,7 @@
      * @returns {string} sanitised value
      */
     function sanitiseForSql(value){
+        if (value === null || value === undefined) { return null; }
         return (value+"").replace(/'([^']|$)/g,"''$1");
     }
 
