@@ -1,3 +1,4 @@
+cordova.define("uk.co.workingedge.cordova.plugin.sqliteporter.sqlitePorter", function(require, exports, module) {
 /**
  * Enables data/table structure to be imported/exported from a SQLite database as JSON/SQL
  * @module sqlitePorter
@@ -390,7 +391,7 @@
                         if(_count === 0){
                             mainSql += "INSERT OR REPLACE INTO " + sqlEscape(tableName) + " SELECT";
                             for(var j = 0; j < _fields.length; j++){
-                                if(_values[j].toLowerCase() == 'null'){
+                                if(_values[j] === undefined || _values[j] === null || _values[j].toLowerCase() == 'null'){
                                     mainSql += " NULL AS '" + _fields[j] + "'";
                                 }else{
                                     mainSql += " '" + _values[j] + "' AS '" + _fields[j] + "'";
@@ -402,7 +403,7 @@
                         }else{
                             mainSql += " UNION SELECT ";
                             for(var j = 0; j < _values.length; j++){
-                                if(_values[j].toLowerCase() == 'null'){
+                                if(_values[j] === undefined || _values[j] === null || _values[j].toLowerCase() == 'null'){
                                     mainSql += " NULL";
                                 }else{
                                     mainSql += " '" + _values[j] + "'";
@@ -624,3 +625,5 @@
 
     module.exports = sqlitePorter;
 }());
+
+});
