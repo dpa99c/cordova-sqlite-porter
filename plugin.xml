@@ -10,8 +10,8 @@
     <engines>
         <engine name="cordova" version=">=3.0.0" />
     </engines>
-    <repo>https://github.com/dpa99c/cordova-sqlite-porter.git</repo>
-    <issue>https://github.com/dpa99c/cordova-sqlite-porter/issues</issue>
+    <repo>https://github.com/NozzerFX/cordova-sqlite-porter.git</repo>
+    <issue>https://github.com/NozzerFX/cordova-sqlite-porter/issues</issue>
 
     <license>MIT</license>
     <keywords>ecosystem:cordova,cordova,phonegap,database,sqlite,websql,import,export</keywords>

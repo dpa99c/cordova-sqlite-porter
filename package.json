@@ -7,7 +7,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/dpa99c/cordova-sqlite-porter.git"
+        "url": "https://github.com/NozzerFX/cordova-sqlite-porter.git"
     },
     "cordova": {
         "id": "uk.co.workingedge.cordova.plugin.sqliteporter",
@@ -24,7 +24,7 @@
             "browser"
         ]    
     },
-    "issue": "https://github.com/dpa99c/cordova-sqlite-porter/issues",
+    "issue": "https://github.com/NozzerFX/cordova-sqlite-porter/issues",
     "keywords": [
         "ecosystem:cordova",
         "cordova",
