@@ -1,4 +1,4 @@
-cordova.define("uk.co.workingedge.cordova.plugin.sqliteporter.sqlitePorter", function(require, exports, module) {
+cordova.define("uk.co.dualmode.cordova.plugin.sqliteporter.sqlitePorter", function(require, exports, module) {
 /**
  * Enables data/table structure to be imported/exported from a SQLite database as JSON/SQL
  * @module sqlitePorter
