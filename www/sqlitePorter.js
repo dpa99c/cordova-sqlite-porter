@@ -178,13 +178,15 @@
                         if (results.rows && !opts.dataOnly) {
                             for (var i = 0; i < results.rows.length; i++) {
                                 var row = results.rows.item(i);
-                                if (row.sql != null && row.sql.indexOf("CREATE TABLE") != -1 && row.sql.indexOf("__") == -1) {
+                                if(row.sql == null || row.sql.indexOf("__") != -1) continue;
+
+                                if (row.sql.indexOf("CREATE TABLE") != -1) {
                                     var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
                                     if(!isReservedTable(tableName)) {
                                         sqlStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
+                                        sqlStatements.push(row.sql);
                                     }
-                                }
-                                if(row.sql != null && row.sql.indexOf("__") == -1){
+                                }else{
                                     sqlStatements.push(row.sql);
                                 }
                             }
