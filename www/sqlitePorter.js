@@ -180,7 +180,9 @@
                                 var row = results.rows.item(i);
                                 if (row.sql != null && row.sql.indexOf("CREATE TABLE") != -1 && row.sql.indexOf("__") == -1) {
                                     var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
-                                    sqlStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
+                                    if(!isReservedTable(tableName)) {
+                                        sqlStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
+                                    }
                                 }
                                 if(row.sql != null && row.sql.indexOf("__") == -1){
                                     sqlStatements.push(row.sql);
