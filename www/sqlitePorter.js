@@ -359,12 +359,14 @@
                     mainSql += "DROP TABLE IF EXISTS " + sqlEscape(tableName) + separator
                         + "CREATE TABLE " + sqlEscape(tableName) + json.structure.tables[tableName] + separator;
                 }
-                for(var i=0; i<json.structure.otherSQL.length; i++){
-                    var command = json.structure.otherSQL[i];
-                    if(command.match(/CREATE INDEX/i)){
-                        createIndexSql += json.structure.otherSQL[i] + separator;
-                    }else{
-                        mainSql += json.structure.otherSQL[i] + separator;
+                if(json.structure.otherSQL){
+                    for(var i=0; i<json.structure.otherSQL.length; i++){
+                        var command = json.structure.otherSQL[i];
+                        if(command.match(/CREATE INDEX/i)){
+                            createIndexSql += json.structure.otherSQL[i] + separator;
+                        }else{
+                            mainSql += json.structure.otherSQL[i] + separator;
+                        }
                     }
                 }
             }
