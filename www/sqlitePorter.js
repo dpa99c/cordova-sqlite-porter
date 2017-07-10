@@ -178,15 +178,11 @@
                         if (results.rows && !opts.dataOnly) {
                             for (var i = 0; i < results.rows.length; i++) {
                                 var row = results.rows.item(i);
-                                if(row.sql == null || row.sql.indexOf("__") != -1) continue;
-
-                                if (row.sql.indexOf("CREATE TABLE") != -1) {
+                                if (row.sql != null && row.sql.indexOf("CREATE TABLE") != -1 && row.sql.indexOf("__") == -1) {
                                     var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
-                                    if(!isReservedTable(tableName)) {
-                                        sqlStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
-                                        sqlStatements.push(row.sql);
-                                    }
-                                }else{
+                                    sqlStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
+                                }
+                                if(row.sql != null && row.sql.indexOf("__") == -1){
                                     sqlStatements.push(row.sql);
                                 }
                             }
@@ -361,7 +357,7 @@
             if(json.structure){
                 for(var tableName in json.structure.tables){
                     mainSql += "DROP TABLE IF EXISTS " + sqlEscape(tableName) + separator
-                    + "CREATE TABLE " + sqlEscape(tableName) + json.structure.tables[tableName] + separator;
+                        + "CREATE TABLE " + sqlEscape(tableName) + json.structure.tables[tableName] + separator;
                 }
                 for(var i=0; i<json.structure.otherSQL.length; i++){
                     var command = json.structure.otherSQL[i];
@@ -576,7 +572,7 @@
      */
     function sanitiseForSql(value){
         if (value === null || value === undefined) { return null; }
-        return (value+"").replace(/'([^']|$)/g,"''$1");
+        return (value+"").replace(/'/g,"''");
     }
 
     /**
