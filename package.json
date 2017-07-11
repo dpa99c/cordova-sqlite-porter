@@ -1,5 +1,5 @@
 {
-    "version": "0.1.7",
+    "version": "1.0.0",
     "name": "uk.co.workingedge.cordova.plugin.sqliteporter",
     "cordova_name": "sqlite porter",
     "description": "Enables importing/exporting of SQLite databases to/from JSON/SQL.",
