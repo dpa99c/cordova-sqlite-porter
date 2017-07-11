@@ -70,7 +70,9 @@
         db.transaction(function(tx) {
             try {
                 //Clean SQL + split into statements
-                var totalCount, currentCount, statements = sql.replace(/[\n\r]/g,"") // strip out line endings
+                var totalCount, currentCount;
+
+                var statements = sql
                     .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm,"") // strip out comments
                     .match(statementRegEx);
 
@@ -272,8 +274,7 @@
 
                         if (results.rows && !opts.dataOnly) {
                             json.structure = {
-                                tables:{},
-                                otherSQL:[]
+                                tables:{}
                             };
                             for (var i = 0; i < results.rows.length; i++) {
                                 var row = results.rows.item(i);
@@ -287,6 +288,9 @@
                                             statementCount += 2; // One for DROP, one for create
                                         }
                                     }else{
+                                        if(!json.structure.otherSQL){
+                                            json.structure.otherSQL = [];
+                                        }
                                         json.structure.otherSQL.push(row.sql.replace(/\s+/g," "));
                                         statementCount++;
                                     }
@@ -563,7 +567,7 @@
      * @returns {string} trimmed string
      */
     function trimWhitespace(str){
-        return str.replace(/^\s+/,"").replace(/\s+&/,"");
+        return str.replace(/^\s+/,"").replace(/\s+$/,"");
     }
 
     /**
