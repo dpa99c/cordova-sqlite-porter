@@ -243,7 +243,7 @@
                             sqlStatement = "SELECT * FROM " + sqlEscape(tableName);
                         tx.executeSql(sqlStatement, [],
                             function (tx, rslt) {
-                                if (rslt.rows) {
+                                if (rslt.rows && !isReservedTable(tableName)) {
                                     json.data.inserts[tableName] = [];
                                     for (var m = 0; m < rslt.rows.length; m++) {
                                         var dataRow = rslt.rows.item(m);
