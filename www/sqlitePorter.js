@@ -180,18 +180,18 @@
                         if (results.rows && !opts.dataOnly) {
                             for (var i = 0; i < results.rows.length; i++) {
                                 var row = results.rows.item(i);
-                                if (row.sql != null && row.sql.indexOf("CREATE TABLE") != -1 && row.sql.indexOf("__") == -1) {
-                                    var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
-                                    /*Added checking for reserved tables in order to prevent even that DROP and CREATE statements for reserved tables be added to the exported sql*/
-                                    if(!isReservedTable(tableName)){ 
-                                        sqlStatements.push(row.sql);
-                                        sqlStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
+                                var shouldAdd = true;
+                                if (row.sql != null && row.sql.indexOf("__") == -1) {
+                                    if(row.sql.indexOf("CREATE TABLE") != -1){
+                                        var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
+                                        if(!isReservedTable(tableName)){
+                                            sqlStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
+                                        }else{
+                                            shouldAdd = false;
+                                        }
                                     }
+                                    if(shouldAdd) sqlStatements.push(row.sql);
                                 }
-                                /*commented following lines because the core code has been added in the previous block*/
-//                                if(row.sql != null && row.sql.indexOf("__") == -1){
-//                                    sqlStatements.push(row.sql);
-//                                }
                             }
                         }
 
