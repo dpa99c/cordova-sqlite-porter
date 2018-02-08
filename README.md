@@ -5,8 +5,6 @@ SQLite Porter Cordova/Phonegap Plugin [![Latest Stable Version](https://img.shie
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [SQLite Porter Cordova/Phonegap Plugin * *](#sqlite-porter-cordovaphonegap-plugin--)
-  - [Contents](#contents)
 - [Overview](#overview)
   - [Usage scenarios](#usage-scenarios)
 - [Installation](#installation)
