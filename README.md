@@ -376,7 +376,7 @@ There are two top-level keys, both of which are optional:
         "data": ...
     }
 
-##`structure` 
+## `structure` 
 
 Defines the table structure of the SQLite DB and other non-data-related SQL statements (e.g. index definitions). There are two possible keys:
 
@@ -387,7 +387,7 @@ Defines the table structure of the SQLite DB and other non-data-related SQL stat
         }
     }
 
-###`tables`
+### `tables`
 
 A key/value map which defines table structure, where the key is the table name and the value is the SQL table definition.
 
@@ -413,7 +413,7 @@ A list of SQL statements which are not related to table structure or data insert
        ]
     }
 
-##`data`
+## `data`
 
 Defines data to insert into database tables. There are 3 optional keys:
 
@@ -427,7 +427,7 @@ Defines data to insert into database tables. There are 3 optional keys:
         }
     }
     
-###`inserts`
+### `inserts`
 
 A key/value map of row data to insert, where the key is the table name and the value is a list of row data objects in which the key is the field name and the value is the field value.
 
@@ -452,7 +452,7 @@ Would be represented as:
         }
     }
     
-###`updates`
+### `updates`
 
 A key/value map of row data to update, where the key is the table name and the value is a list of row update objects. A row update update consists of a `where` key which identifies the row to update via the primary key and a `set` object which defines the row data to insert.
 
@@ -482,7 +482,7 @@ Would be represented as:
     }
 
 
-###`deletes`
+### `deletes`
 
 A key/value map of rows to delete, where the key is the table name and the value is an object define the primary key of the row to delete.
 
