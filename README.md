@@ -196,7 +196,7 @@ Can be used to import data into the database and/or create the table structure.
 ### Parameters
 
 - {Database} db - open SQLite database to import into
-- {string/object} json - [JSON structure](#json_structure) containing row data and/or table structure as either a JSON object or string
+- {string/object} json - [JSON structure](#json-structure) containing row data and/or table structure as either a JSON object or string
 - {object} opts - optional parameters:
     - {function} successFn - callback function to execute once import is complete, called with arguments:
         - {integer} count - total number of statements executed in the given SQL string.
@@ -312,7 +312,7 @@ Exports a SQLite DB as a JSON structure
 - {Database} db - open SQLite database to export
 - {object} opts - optional parameters:
     - {function} successFn - callback function to execute after export is complete, with arguments:
-        - {object} json - exported [JSON structure](#json_structure).
+        - {object} json - exported [JSON structure](#json-structure).
         - {integer} count - number of SQL statements that exported JSON structure corresponds to.
     - {boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.
     - {boolean} structureOnly - if true, only table structure will be exported. Otherwise, row will also be exported. Defaults to false.
