@@ -1,14 +1,35 @@
 SQLite Porter Cordova/Phonegap Plugin [![Latest Stable Version](https://img.shields.io/npm/v/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) [![Total Downloads](https://img.shields.io/npm/dt/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://npm-stat.com/charts.html?package=uk.co.workingedge.cordova.plugin.sqliteporter)
 =================================
 
-## Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
 
-* [Overview](#overview)
-* [Installation](#installation)
-* [Usage](#usage)
-* [JSON import optimisations](#json-import-optimisations)
-* [Example projects](#example-projects)
-* [License](#license)
+- [SQLite Porter Cordova/Phonegap Plugin * *](#sqlite-porter-cordovaphonegap-plugin--)
+  - [Contents](#contents)
+- [Overview](#overview)
+  - [Usage scenarios](#usage-scenarios)
+- [Installation](#installation)
+  - [Using the Cordova/Phonegap CLI](#using-the-cordovaphonegap-cli)
+  - [Using Cordova Plugman](#using-cordova-plugman)
+  - [PhoneGap Build](#phonegap-build)
+- [Usage](#usage)
+  - [importSqlToDb()](#importsqltodb)
+  - [exportDbToSql()](#exportdbtosql)
+  - [importJsonToDb()](#importjsontodb)
+  - [exportDbToJson()](#exportdbtojson)
+  - [wipeDb()](#wipedb)
+- [JSON structure](#json-structure)
+  - [JSON structure examples](#json-structure-examples)
+- [JSON import optimisations](#json-import-optimisations)
+  - [Batched inserts](#batched-inserts)
+  - [Delayed index creation](#delayed-index-creation)
+- [Example projects](#example-projects)
+  - [HTML5 WebSQL](#html5-websql)
+  - [Native SQLite](#native-sqlite)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Overview
 
