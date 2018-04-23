@@ -399,7 +399,15 @@
                         }
 
                         if(_count === 0){
-                            mainSql += "INSERT OR REPLACE INTO " + sqlEscape(tableName) + " SELECT";
+                            mainSql += "INSERT OR REPLACE INTO " + sqlEscape(tableName) + "(";
+                            for(var field in _fields) {
+                              if(field == 0) {
+                                mainSql += _fields[field];
+                              } else {
+                                mainSql += ", " + _fields[field];
+                              }
+                            }
+                            mainSql += ") SELECT";
                             for(var j = 0; j < _fields.length; j++){
                                 if(typeof _values[j] === "undefined" || _values[j] === null || _values[j].toLowerCase() == 'null'){
                                     mainSql += " NULL AS '" + _fields[j] + "'";
