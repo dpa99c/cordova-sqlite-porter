@@ -72,9 +72,7 @@
                 //Clean SQL + split into statements
                 var totalCount, currentCount;
 
-                var statements = sql
-                    .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm,"") // strip out comments
-                    .match(statementRegEx);
+                var statements = removeComments(sql);
 
                 if(statements === null || (Array.isArray && !Array.isArray(statements)))
                     statements = [];
@@ -641,5 +639,24 @@
         return !!tableName.match(/^sqlite_/);
     }
 
+    /**
+     * Strip out comments
+     * @param {string} sql - Raw SQL query
+     * @returns {string} Uncommented SQL query
+     */
+    function removeComments (sql) {
+        sql = sql.replace(/("(""|[^"])*")|('(''|[^'])*')|(--[^\n\r]*)|(\/\*[\w\W]*?(?=\*\/)\*\/)/gm, (match) => {
+            if (
+                (match[0] === '"' && match[match.length - 1] === '"')
+                || (match[0] === "'" && match[match.length - 1] === "'")
+            ) return match;
+
+            debug('comment removed: {\n%s\n}', match);
+            return '';
+        });
+
+        return sql;
+    }
+    
     module.exports = sqlitePorter;
 }());
