@@ -72,9 +72,7 @@
                 //Clean SQL + split into statements
                 var totalCount, currentCount;
 
-                var statements = sql
-                    .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm,"") // strip out comments
-                    .match(statementRegEx);
+                var statements = removeComments(sql);
 
                 if(statements === null || (Array.isArray && !Array.isArray(statements)))
                     statements = [];
@@ -635,11 +633,30 @@
     /**
      * Indicates if given table name is a reserved SQLite meta-table.
      * @param {string} tableName - name of table to check
-     * @returns {boolean} true if table is a reserved SQLite table
+     * @return {boolean} true if table is a reserved SQLite table
      */
     function isReservedTable(tableName){
         return !!tableName.match(/^sqlite_/);
     }
 
+    /**
+     * Strip out comments
+     * @param {string} sql - Raw SQL query
+     * @return {string} Uncommented SQL query
+     */
+    function removeComments (sql) {
+        sql = sql.replace(/("(""|[^"])*")|('(''|[^'])*')|(--[^\n\r]*)|(\/\*[\w\W]*?(?=\*\/)\*\/)/gm, (match) => {
+            if (
+                (match[0] === '"' && match[match.length - 1] === '"')
+                || (match[0] === "'" && match[match.length - 1] === "'")
+            ) return match;
+
+            debug('comment removed: {\n%s\n}', match);
+            return '';
+        });
+
+        return sql;
+    }
+    
     module.exports = sqlitePorter;
 }());
