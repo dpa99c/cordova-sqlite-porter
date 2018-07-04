@@ -645,13 +645,11 @@
      * @return {string} Uncommented SQL query
      */
     function removeComments (sql) {
-        sql = sql.replace(/("(""|[^"])*")|('(''|[^'])*')|(--[^\n\r]*)|(\/\*[\w\W]*?(?=\*\/)\*\/)/gm, (match) => {
+        sql = sql.replace(/("(""|[^"])*")|('(''|[^'])*')|(--[^\n\r]*)|(\/\*[\w\W]*?(?=\*\/)\*\/)/gm, function(match){
             if (
                 (match[0] === '"' && match[match.length - 1] === '"')
                 || (match[0] === "'" && match[match.length - 1] === "'")
             ) return match;
-
-            debug('comment removed: {\n%s\n}', match);
             return '';
         });
 
