@@ -1,3 +1,4 @@
+cordova.define("uk.co.workingedge.cordova.plugin.sqliteporter.sqlitePorter", function(require, exports, module) {
 /**
  * Enables data/table structure to be imported/exported from a SQLite database as JSON/SQL
  * @module sqlitePorter
@@ -136,9 +137,27 @@
      *  <li>{boolean} structureOnly - if true, only table structure will be exported. Otherwise, row will also be exported. Defaults to false.</li>
      */
     sqlitePorter.exportDbToSql = function (db, opts){
-        opts = opts || {};
-        var exportSQL = "", statementCount = 0;
-
+     opts = opts || {};
+        var json = {}, statementCount = 0; filter = "" ;  filterNames = ""
+        if (!db.transaction || !db.dbname){
+            var e = {}
+            e.message = "There is no valid database"
+            opts.errorFn(e)
+             return;
+        }
+        if (opts.tables && opts.tables.length ){
+            filter = " WHERE tbl_name IN ("
+            filterNames = " AND tbl_name IN ("
+            var names = ""
+            for (let i = 0; i < opts.tables.length; i++) {
+               names += ",'"+opts.tables[i]+"'"
+            }
+            names = names.substring(1)
+            filter +=  names
+            filterNames += names
+            filter += " ) "
+            filterNames += " ) "
+        }
         var exportTables = function (tables) {
             if (tables.n < tables.sqlTables.length && !opts.structureOnly) {
                 db.transaction(
@@ -172,7 +191,7 @@
 
         db.transaction(
             function (transaction) {
-                transaction.executeSql("SELECT sql FROM sqlite_master;", [],
+                transaction.executeSql("SELECT sql FROM sqlite_master "+filter+" ;", [],
                     function (transaction, results) {
                         var sqlStatements = [];
 
@@ -201,7 +220,7 @@
                             }
                         }
 
-                        transaction.executeSql("SELECT tbl_name from sqlite_master WHERE type = 'table'", [],
+                        transaction.executeSql("SELECT tbl_name from sqlite_master WHERE type = 'table' "+filterNames , [],
                             function (transaction, res) {
                                 var sqlTables = [];
                                 for (var k = 0; k < res.rows.length; k++) {
@@ -237,8 +256,26 @@
      */
     sqlitePorter.exportDbToJson = function (db, opts){
         opts = opts || {};
-        var json = {}, statementCount = 0;
-
+        var json = {}, statementCount = 0; filter = "" ;  filterNames = ""
+        if (!db.transaction || !db.dbname){
+            var e = {}
+            e.message = "There is no valid database"
+            opts.errorFn(e)
+             return;
+        }
+         if (opts.tables && opts.tables.length ){
+            filter = " WHERE tbl_name IN ("
+            filterNames = " AND tbl_name IN ("
+            var names = ""
+            for (let i = 0; i < opts.tables.length; i++) {
+               names += ",'"+opts.tables[i]+"'"
+            }
+            names = names.substring(1)
+            filter +=  names
+            filterNames += names
+            filter += " ) "
+            filterNames += " ) "
+        }
         var exportTables = function (tables) {
             if (tables.n < tables.sqlTables.length && !opts.structureOnly) {
                 db.transaction(
@@ -273,7 +310,7 @@
 
         db.transaction(
             function (transaction) {
-                transaction.executeSql("SELECT sql FROM sqlite_master;", [],
+                transaction.executeSql("SELECT sql FROM sqlite_master "+filter+" ;", [],
                     function (transaction, results) {
 
                         if (results.rows && !opts.dataOnly) {
@@ -302,7 +339,7 @@
                             }
                         }
 
-                        transaction.executeSql("SELECT tbl_name from sqlite_master WHERE type = 'table'", [],
+                        transaction.executeSql("SELECT tbl_name from sqlite_master WHERE type = 'table' "+filterNames, [],
                             function (transaction, res) {
                                 var sqlTables = [];
                                 json.data = {
@@ -656,6 +693,10 @@
 
         return sql;
     }
-    
+
     module.exports = sqlitePorter;
 }());
+
+
+
+});
