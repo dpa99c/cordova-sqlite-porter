@@ -138,7 +138,7 @@ cordova.define("uk.co.workingedge.cordova.plugin.sqliteporter.sqlitePorter", fun
      */
     sqlitePorter.exportDbToSql = function (db, opts){
      opts = opts || {};
-        var json = {}, statementCount = 0; filter = "" ;  filterNames = ""
+        var exportSQL = "", statementCount = 0, filter = "" ,  filterNames = "";
         if (!db.transaction || !db.dbname){
             var e = {}
             e.message = "There is no valid database"
@@ -256,7 +256,7 @@ cordova.define("uk.co.workingedge.cordova.plugin.sqliteporter.sqlitePorter", fun
      */
     sqlitePorter.exportDbToJson = function (db, opts){
         opts = opts || {};
-        var json = {}, statementCount = 0; filter = "" ;  filterNames = ""
+        var json = {}, statementCount = 0, filter = "",  filterNames = "";
         if (!db.transaction || !db.dbname){
             var e = {}
             e.message = "There is no valid database"
