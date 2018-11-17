@@ -67,6 +67,7 @@
      */
     sqlitePorter.importSqlToDb = function (db, sql, opts){
         opts = opts || {};
+        if(!isValidDB(db, opts)) return;
         db.transaction(function(tx) {
             try {
                 //Clean SQL + split into statements
@@ -137,6 +138,7 @@
      */
     sqlitePorter.exportDbToSql = function (db, opts){
         opts = opts || {};
+        if(!isValidDB(db, opts)) return;
         var exportSQL = "", statementCount = 0;
 
         var exportTables = function (tables) {
@@ -237,6 +239,7 @@
      */
     sqlitePorter.exportDbToJson = function (db, opts){
         opts = opts || {};
+        if(!isValidDB(db, opts)) return;
         var json = {}, statementCount = 0;
 
         var exportTables = function (tables) {
@@ -356,6 +359,7 @@
      */
     sqlitePorter.importJsonToDb = function (db, json, opts){
         opts = opts || {};
+        if(!isValidDB(db, opts)) return;
         var mainSql = "", createIndexSql = "";
 
         try{
@@ -532,6 +536,7 @@
      */
     sqlitePorter.wipeDb = function (db, opts){
         opts = opts || {};
+        if(!isValidDB(db, opts)) return;
         db.transaction(
             function (transaction) {
                 transaction.executeSql("SELECT sql FROM sqlite_master;", [],
@@ -655,6 +660,25 @@
         });
 
         return sql;
+    }
+
+    /**
+     * Validates specified database.
+     * If not valid, invokes error callback (if it exists) or otherwise raises a JS error
+     * @param {object} db - SQLite database instance to validate
+     * @param {object} opts - options object which may contain an error callback
+     */
+    function isValidDB(db, opts){
+        if(!db || typeof db.transaction !== "function"){
+            var errorMsg = "'db' argument must provide a valid SQLite database instance";
+            if(opts && opts.onError){
+                opts.onError(errorMsg);
+                return false;
+            }else{
+                throw errorMsg;
+            }
+        }
+        return true;
     }
     
     module.exports = sqlitePorter;
