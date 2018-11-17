@@ -135,11 +135,13 @@
      *  </li>
      *  <li>{boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.</li>
      *  <li>{boolean} structureOnly - if true, only table structure will be exported. Otherwise, row will also be exported. Defaults to false.</li>
+     *  <li>{array} tables - list of table names to export. If not specified, all tables will be exported.
      */
     sqlitePorter.exportDbToSql = function (db, opts){
         opts = opts || {};
         if(!isValidDB(db, opts)) return;
-        var exportSQL = "", statementCount = 0;
+        var exportSQL = "", statementCount = 0,
+            filters = createFilters(opts.tables);
 
         var exportTables = function (tables) {
             if (tables.n < tables.sqlTables.length && !opts.structureOnly) {
@@ -174,7 +176,11 @@
 
         db.transaction(
             function (transaction) {
-                transaction.executeSql("SELECT sql FROM sqlite_master;", [],
+                var sqlQuery = "SELECT sql FROM sqlite_master";
+                if(filters){
+                    sqlQuery += " WHERE " + filters;
+                }
+                transaction.executeSql(sqlQuery, [],
                     function (transaction, results) {
                         var sqlStatements = [];
 
@@ -202,8 +208,11 @@
                                 statementCount++;
                             }
                         }
-
-                        transaction.executeSql("SELECT tbl_name from sqlite_master WHERE type = 'table'", [],
+                        var sqlQuery = "SELECT tbl_name from sqlite_master WHERE type = 'table'";
+                        if(filters){
+                            sqlQuery += " AND " + filters;
+                        }
+                        transaction.executeSql(sqlQuery, [],
                             function (transaction, res) {
                                 var sqlTables = [];
                                 for (var k = 0; k < res.rows.length; k++) {
@@ -236,11 +245,13 @@
      *  </li>
      *  <li>{boolean} dataOnly - if true, only row data will be exported. Otherwise, table structure will also be exported. Defaults to false.</li>
      *  <li>{boolean} structureOnly - if true, only table structure will be exported. Otherwise, row will also be exported. Defaults to false.</li>
+     *  <li>{array} tables - list of table names to export. If not specified, all tables will be exported.
      */
     sqlitePorter.exportDbToJson = function (db, opts){
         opts = opts || {};
         if(!isValidDB(db, opts)) return;
-        var json = {}, statementCount = 0;
+        var json = {}, statementCount = 0,
+            filters = createFilters(opts.tables);
 
         var exportTables = function (tables) {
             if (tables.n < tables.sqlTables.length && !opts.structureOnly) {
@@ -276,7 +287,11 @@
 
         db.transaction(
             function (transaction) {
-                transaction.executeSql("SELECT sql FROM sqlite_master;", [],
+                var sqlQuery = "SELECT sql FROM sqlite_master";
+                if(filters){
+                    sqlQuery += " WHERE " + filters;
+                }
+                transaction.executeSql(sqlQuery, [],
                     function (transaction, results) {
 
                         if (results.rows && !opts.dataOnly) {
@@ -305,7 +320,11 @@
                             }
                         }
 
-                        transaction.executeSql("SELECT tbl_name from sqlite_master WHERE type = 'table'", [],
+                        var sqlQuery = "SELECT tbl_name from sqlite_master WHERE type = 'table'";
+                        if(filters){
+                            sqlQuery += " AND " + filters;
+                        }
+                        transaction.executeSql(sqlQuery, [],
                             function (transaction, res) {
                                 var sqlTables = [];
                                 json.data = {
@@ -679,6 +698,24 @@
             }
         }
         return true;
+    }
+
+    /**
+     * Creates a SQL statement fragment to filter by specified tables
+     * @param {array} tables - list of table names to filter by
+     * @return {string}
+     */
+    function createFilters(tables){
+        var filters = "";
+        if(!tables || tables.length === 0) return filters;
+
+        var names = "";
+        for (var i = 0; i < tables.length; i++) {
+            names += ",'"+tables[i]+"'"
+        }
+        names = names.substring(1);
+        filters = "tbl_name IN (" + names  +" ) ";
+        return filters;
     }
     
     module.exports = sqlitePorter;
