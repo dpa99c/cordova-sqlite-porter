@@ -355,7 +355,7 @@
      *  </li>
      * </ul>
      */
-    sqlitePorter.importJsonToDb = function (db, json, opts){
+    sqlitePorter.importJsonToDb = async function (db, json, opts){
         opts = opts || {};
         var mainSql = "", createIndexSql = "";
 
@@ -393,7 +393,12 @@
                         var _row = json.data.inserts[tableName][i];
                         var _fields = [];
                         var _values = [];
-                        for(var col in _row){
+                        var _existingColumns = opts.validateExistingColumns ? await getColumnsNameOfTable(db, tableName) : [];
+
+                        for (var col in _row) {
+                            if (opts.validateExistingColumns && _existingColumns.indexOf(col) == -1) {
+                              continue;
+                            }
                             _fields.push(col);
                             _values.push(sanitiseForSql(_row[col]));
                         }
@@ -446,17 +451,18 @@
 
             if(json.data.updates){
                 var tableName, _row, i, _col, _count;
-                for( tableName in json.data.updates){
-                    for(i=0; i < json.data.updates[tableName].length; i++){
+                for (tableName in json.data.updates) {
+                    var _existingColumns = opts.validateExistingColumns ? await getColumnsNameOfTable(db, tableName) : [];
+                    for (i = 0; i < json.data.updates[tableName].length; i++) {
                         var _row = json.data.updates[tableName][i];
-                        mainSql += "UPDATE " + sqlEscape(tableName);
-
                         _count = 0;
-                        for(_col in _row.set){
+                        for (_col in _row.set) {
+                            if (opts.validateExistingColumns && _existingColumns.indexOf(col) == -1) {
+                              continue;
+                            }
                             mainSql += (_count === 0 ? " SET " : ", ") + _col + "='" + sanitiseForSql(_row.set[_col]) + "'";
                             _count++;
                         }
-
                         _count = 0;
                         for(_col in _row.where){
                             mainSql += (_count === 0 ? " WHERE " : " AND ") + _col + "='" + sanitiseForSql(_row.where[_col]) + "'";
@@ -631,6 +637,21 @@
      */
     function isReservedTable(tableName){
         return !!tableName.match(/^sqlite_/);
+    }
+
+    /**
+     * This async function returns the name of the columns of the table
+     * @param {Database} db - SQLite database to execute pragma query
+     * @param {string} tableName - name of table
+     * @return {array} string array containing the name of the table columns
+     */
+    async function getColumnsNameOfTable(db, tableName) {
+        var _existingColumns = [];
+        var resultPragma = (await db.executeSql("PRAGMA table_info('" + tableName + "')", []));
+        for (let j = 0; j < resultPragma.rows.length; j++) {
+            _existingColumns.push(resultPragma.rows.item(j).name);
+        }
+        return _existingColumns;
     }
 
     module.exports = sqlitePorter;
