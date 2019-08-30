@@ -59,7 +59,7 @@
      *  </li>
      *  <li>{function} progressFn - callback function to execute after each successful execution of SQL statement, called with arguments:
      *      <ul>
-     *          <li>{object} count - number of statements executed so far.</li>
+     *          <li>{integer} count - number of statements executed so far.</li>
      *          <li>{integer} totalCount - total number of statements in the given SQL string.</li>
      *      <ul>
      *  </li>
@@ -547,7 +547,7 @@
      *  </li>
      *  <li>{function} progressFn - callback function to execute after each successful table drop, called with arguments:
      *      <ul>
-     *          <li>{object} count - number of tables dropped so far.</li>
+     *          <li>{integer} count - number of tables dropped so far.</li>
      *          <li>{integer} totalCount - total number of tables to drop.</li>
      *      <ul>
      *  </li>
