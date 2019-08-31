@@ -9,6 +9,7 @@
         "type": "git",
         "url": "https://github.com/dpa99c/cordova-sqlite-porter.git"
     },
+    "main": "www/sqlitePorter.js",
     "cordova": {
         "id": "uk.co.workingedge.cordova.plugin.sqliteporter",
         "platforms": [
