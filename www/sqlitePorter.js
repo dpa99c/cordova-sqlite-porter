@@ -59,7 +59,7 @@
      *  </li>
      *  <li>{function} progressFn - callback function to execute after each successful execution of SQL statement, called with arguments:
      *      <ul>
-     *          <li>{object} count - number of statements executed so far.</li>
+     *          <li>{integer} count - number of statements executed so far.</li>
      *          <li>{integer} totalCount - total number of statements in the given SQL string.</li>
      *      <ul>
      *  </li>
@@ -204,7 +204,7 @@
 
                         for (var j = 0; j < sqlStatements.length; j++) {
                             if (sqlStatements[j] != null) {
-                                exportSQL += sqlStatements[j].replace(/\s+/g," ") + separator;
+                                exportSQL += sqlStatements[j].replace(/[^\S\r\n]/g," ") + separator;
                                 statementCount++;
                             }
                         }
@@ -305,15 +305,15 @@
                                     if (row.sql.indexOf("CREATE TABLE") != -1){
                                         var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
                                         if(!isReservedTable(tableName)){
-                                            var tableStructure = trimWhitespace(row.sql.replace("CREATE TABLE " + sqlEscape(tableName), ""));
-                                            json.structure.tables[tableName] = tableStructure.replace(/\s+/g," ");
+                                            var tableStructure = trimWhitespace(row.sql.replace("CREATE TABLE " + tableName, ""));
+                                            json.structure.tables[tableName] = tableStructure.replace(/[^\S\r\n]/g," ");
                                             statementCount += 2; // One for DROP, one for create
                                         }
                                     }else{
                                         if(!json.structure.otherSQL){
                                             json.structure.otherSQL = [];
                                         }
-                                        json.structure.otherSQL.push(row.sql.replace(/\s+/g," "));
+                                        json.structure.otherSQL.push(row.sql.replace(/[^\S\r\n]/g," "));
                                         statementCount++;
                                     }
                                 }
@@ -366,7 +366,7 @@
      *  </li>
      *  <li>{function} progressFn - callback function to execute after each successful execution of SQL statement, called with arguments:
      *      <ul>
-     *          <li>{object} count - number of statements executed so far.</li>
+     *          <li>{integer} count - number of statements executed so far.</li>
      *          <li>{integer} totalCount - total number of statements in the given SQL string.</li>
      *      <ul>
      *  </li>
@@ -547,7 +547,7 @@
      *  </li>
      *  <li>{function} progressFn - callback function to execute after each successful table drop, called with arguments:
      *      <ul>
-     *          <li>{object} count - number of tables dropped so far.</li>
+     *          <li>{integer} count - number of tables dropped so far.</li>
      *          <li>{integer} totalCount - total number of tables to drop.</li>
      *      <ul>
      *  </li>
