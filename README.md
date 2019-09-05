@@ -1,4 +1,4 @@
-SQLite Porter Cordova/Phonegap Plugin [![Latest Stable Version](https://img.shields.io/npm/v/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) [![Total Downloads](https://img.shields.io/npm/dt/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://npm-stat.com/charts.html?package=uk.co.workingedge.cordova.plugin.sqliteporter)
+SQLite Porter Library and Cordova/Phonegap Plugin [![Latest Stable Version](https://img.shields.io/npm/v/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) [![Total Downloads](https://img.shields.io/npm/dt/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://npm-stat.com/charts.html?package=uk.co.workingedge.cordova.plugin.sqliteporter)
 =================================
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -11,6 +11,7 @@ SQLite Porter Cordova/Phonegap Plugin [![Latest Stable Version](https://img.shie
   - [Using the Cordova/Phonegap CLI](#using-the-cordovaphonegap-cli)
   - [Using Cordova Plugman](#using-cordova-plugman)
   - [PhoneGap Build](#phonegap-build)
+  - [Plain CommonJS library](#plain-commonjs-library)
 - [Usage](#usage)
   - [importSqlToDb()](#importsqltodb)
   - [exportDbToSql()](#exportdbtosql)
@@ -31,8 +32,9 @@ SQLite Porter Cordova/Phonegap Plugin [![Latest Stable Version](https://img.shie
 
 # Overview
 
-This Cordova/Phonegap plugin can be used to import/export to/from a SQLite database using either SQL or JSON.
+This library (and also Cordova/Phonegap plugin) can be used to import/export to/from a SQLite database using either SQL or JSON.
 
+- Works in any JavaScript environment that supports Common-JS modules (i.e. NodeJS, Webpack) and provides a WebSQL API over a SQLite database
 - Works on all Cordova platforms that [support HTML5 WebSQL DB in the WebView](http://docs.phonegap.com/en/4.0.0/cordova_storage_storage.md.html):
     - Android
     - iOS
@@ -48,7 +50,7 @@ This can be used for platforms that don't have WebSQL in WebView (e.g. Windows) 
     - Windows Phone 8
 - Import/export either just the table data or the entire table structure as well.
 
-The plugin is registered on [npm](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) as `uk.co.workingedge.cordova.plugin.sqliteporter`
+This library/plugin is registered on [npm](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) as `uk.co.workingedge.cordova.plugin.sqliteporter`
 
 <!-- DONATE -->
 [![donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG_global.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZRD3W47HQ3EMJ)
@@ -85,9 +87,26 @@ Add the following xml to your config.xml to use the latest version of this plugi
 
     <gap:plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" source="npm" />
 
+## Plain CommonJS library
+In any supporting environment such as NodeJs or webpack-based project
+
+    $ npm install uk.co.workingedge.cordova.plugin.sqliteporter
+    
 # Usage
 
-The plugin is exposed via the `cordova.plugins.sqlitePorter` object and provides the following functions:
+When used as a Cordova plugin, it is exposed via the `cordova.plugins.sqlitePorter` object.
+
+When used as a plain JavaScript library, simply require or import it:
+
+    const sqlitePorter = require('uk.co.workingedge.cordova.plugin.sqliteporter');
+    
+or (ES6):
+
+    import sqlitePorter from 'uk.co.workingedge.cordova.plugin.sqliteporter';
+    
+and then reference it as just `sqlitePorter` instead of `cordova.plugins.sqlitePorter`
+
+It provides the following functions:
 
 - [importSqlToDb()](#importsqltodb)
 - [exportDbToSql()](#exportdbtosql)
