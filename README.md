@@ -112,7 +112,7 @@ Can be used to import data defined in the SQL statements into the database, and 
     - {function} errorFn - callback function to execute on error during import, called with arguments:
         - {object} error - object representing the error.
     - {function} progressFn - callback function to execute after each successful execution of SQL statement, called with arguments:
-        - {object} count - number of statements executed so far.
+        - {integer} count - number of statements executed so far.
         - {integer} totalCount - total number of statements in the given SQL string.
 
 ### Example usage
@@ -204,7 +204,7 @@ Can be used to import data into the database and/or create the table structure.
     - {function} errorFn - callback function to execute on error during import, called with arguments:
         - {object} error - object representing the error.
     - {function} progressFn - callback function to execute after each successful execution of SQL statement, called with arguments:
-        - {object} count - number of statements executed so far.
+        - {integer} count - number of statements executed so far.
         - {integer} totalCount - total number of statements in the given SQL string.
     - {integer} batchInsertSize - maximum number of inserts to batch into a SQL statement using UNION SELECT method.
     Defaults to 250 if not specified. Set to 1 to disable batching and perform 1 insert per SQL statement.
@@ -345,7 +345,7 @@ Wipes all data from a database by dropping all existing tables.
     - {function} errorFn - callback function to execute on error during wipe, called with arguments:
         - {object} error - object representing the error.
     - {function} progressFn - callback function to execute after each successful table drop, called with arguments:
-        - {object} count - number of tables dropped so far.
+        - {integer} count - number of tables dropped so far.
         - {integer} totalCount - total number of tables to drop.
 
 ### Example usage
