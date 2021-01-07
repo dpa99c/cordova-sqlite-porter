@@ -516,7 +516,7 @@ Would be represented as:
     {
         "structure":{
             "data": {
-                "updates": {
+                "deletes": {
                     "Artist":[
                         {
                             "Id":"5"
