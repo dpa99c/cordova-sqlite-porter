@@ -72,13 +72,7 @@
             try {
                 //Clean SQL + split into statements
                 var totalCount, currentCount;
-
-                var statements = removeComments(sql)
-                    .match(statementRegEx);;
-
-                if(statements === null || (Array.isArray && !Array.isArray(statements)))
-                    statements = [];
-
+                
                 function handleError(e){
                     if(opts.errorFn){
                         opts.errorFn(e);
@@ -86,6 +80,14 @@
                         console.error(e.message);
                     }
                 }
+                
+                var statements = removeComments(sql)
+                    .match(statementRegEx);;
+
+                if(statements === null || (Array.isArray && !Array.isArray(statements)))
+                    statements = [];
+
+                
 
                 function applyStatements() {
                     if (statements.length > 0) {
