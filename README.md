@@ -1,3 +1,8 @@
+[![NPM version](https://img.shields.io/npm/v/community-cordova-plugin-sqlite-porter)](https://www.npmjs.com/package/community-cordova-plugin-sqlite-porter)
+[![Downloads](https://img.shields.io/npm/dm/community-cordova-plugin-sqlite-porter)](https://www.npmjs.com/package/community-cordova-plugin-sqlite-porter)
+
+#### This is a fork of the original plugin uk.co.workingedge.cordova.plugin.sqliteporter
+
 SQLite Porter Library and Cordova/Phonegap Plugin [![Latest Stable Version](https://img.shields.io/npm/v/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) [![Total Downloads](https://img.shields.io/npm/dt/uk.co.workingedge.cordova.plugin.sqliteporter.svg)](https://npm-stat.com/charts.html?package=uk.co.workingedge.cordova.plugin.sqliteporter)
 =================================
 
@@ -53,7 +58,6 @@ This can be used for platforms that don't have WebSQL in WebView (e.g. Windows) 
 This library/plugin is registered on [npm](https://www.npmjs.com/package/uk.co.workingedge.cordova.plugin.sqliteporter) as `uk.co.workingedge.cordova.plugin.sqliteporter`
 
 <!-- DONATE -->
-[![donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG_global.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZRD3W47HQ3EMJ)
 
 I dedicate a considerable amount of my free time to developing and maintaining this Cordova plugin, along with my other Open Source software.
 To help ensure this plugin is kept updated, new features are added and bugfixes are implemented quickly, please donate a couple of dollars (or a little more if you can stretch) as this will help me to afford to dedicate time to its maintenance. Please consider donating if you're using this plugin in an app that makes you money, if you're being paid to make the app, if you're asking for new features or priority bug fixes.
@@ -69,8 +73,8 @@ To help ensure this plugin is kept updated, new features are added and bugfixes 
 
 ## Using the Cordova/Phonegap [CLI](http://docs.phonegap.com/en/edge/guide_cli_index.md.html)
 
-    $ cordova plugin add uk.co.workingedge.cordova.plugin.sqliteporter
-    $ phonegap plugin add uk.co.workingedge.cordova.plugin.sqliteporter
+    $ cordova plugin add community-cordova-plugin-sqlite-porter
+    $ phonegap plugin add community-cordova-plugin-sqlite-porter
 
 **NOTE**: Make sure your Cordova CLI version is 5.0.0+ (check with `cordova -v`). Cordova 4.x and below uses the now deprecated [Cordova Plugin Registry](http://plugins.cordova.io) as its plugin repository, so using a version of Cordova 4.x or below will result in installing an [old version](http://plugins.cordova.io/#/package/uk.co.workingedge.cordova.plugin.sqliteporter) of this plugin.
 
