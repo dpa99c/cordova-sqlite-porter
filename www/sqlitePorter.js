@@ -72,13 +72,7 @@
             try {
                 //Clean SQL + split into statements
                 var totalCount, currentCount;
-
-                var statements = removeComments(sql)
-                    .match(statementRegEx);;
-
-                if(statements === null || (Array.isArray && !Array.isArray(statements)))
-                    statements = [];
-
+                
                 function handleError(e){
                     if(opts.errorFn){
                         opts.errorFn(e);
@@ -86,6 +80,14 @@
                         console.error(e.message);
                     }
                 }
+                
+                var statements = removeComments(sql)
+                    .match(statementRegEx);;
+
+                if(statements === null || (Array.isArray && !Array.isArray(statements)))
+                    statements = [];
+
+                
 
                 function applyStatements() {
                     if (statements.length > 0) {
@@ -558,17 +560,23 @@
         if(!isValidDB(db, opts)) return;
         db.transaction(
             function (transaction) {
-                transaction.executeSql("SELECT sql FROM sqlite_master;", [],
+                transaction.executeSql("SELECT tbl_name, type FROM sqlite_master;", [],
                     function (transaction, results) {
                         var dropStatements = [];
 
                         if (results.rows) {
                             for (var i = 0; i < results.rows.length; i++) {
                                 var row = results.rows.item(i);
-                                if (row.sql != null && row.sql.indexOf("CREATE TABLE") != -1 && row.sql.indexOf("__") == -1) {
-                                    var tableName = sqlUnescape(trimWhitespace(trimWhitespace(row.sql.replace("CREATE TABLE", "")).split(/ |\(/)[0]));
+                                if(row.type == 'table') {
+                                    var tableName = row.tbl_name;
                                     if(!isReservedTable(tableName)){
                                         dropStatements.push("DROP TABLE IF EXISTS " + sqlEscape(tableName));
+                                    }
+                                }
+                                if(row.type == 'view') {
+                                    var viewName = row.tbl_name;
+                                    if(!isReservedTable(viewName)){
+                                        dropStatements.push("DROP VIEW IF EXISTS " + sqlEscape(viewName));
                                     }
                                 }
                             }
@@ -717,6 +725,6 @@
         filters = "tbl_name IN (" + names  +" ) ";
         return filters;
     }
-    
+
     module.exports = sqlitePorter;
 }());
